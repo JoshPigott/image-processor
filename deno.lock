@@ -1,8 +1,10 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@josefabio/deno-canvas@^1.5.2": "1.5.2",
     "jsr:@std/cli@^1.0.28": "1.0.28",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
+    "jsr:@std/encoding@~0.224.2": "0.224.3",
     "jsr:@std/fmt@^1.0.9": "1.0.9",
     "jsr:@std/fs@^1.0.23": "1.0.23",
     "jsr:@std/html@^1.0.5": "1.0.5",
@@ -14,8 +16,17 @@
     "jsr:@std/streams@^1.0.17": "1.0.17"
   },
   "jsr": {
+    "@josefabio/deno-canvas@1.5.2": {
+      "integrity": "0da3524c02af0a5294c820174fd1ac57a58441fd99bef8750e505567a10770f4",
+      "dependencies": [
+        "jsr:@std/encoding@~0.224.2"
+      ]
+    },
     "@std/cli@1.0.28": {
       "integrity": "74ef9b976db59ca6b23a5283469c9072be6276853807a83ec6c7ce412135c70a"
+    },
+    "@std/encoding@0.224.3": {
+      "integrity": "5e861b6d81be5359fad4155e591acf17c0207b595112d1840998bb9f476dbdaf"
     },
     "@std/encoding@1.0.10": {
       "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
@@ -33,7 +44,7 @@
       "integrity": "577b4252290af1097132812b339fffdd55fb0f4aeb98ff11bdbf67998aa17193",
       "dependencies": [
         "jsr:@std/cli",
-        "jsr:@std/encoding",
+        "jsr:@std/encoding@^1.0.10",
         "jsr:@std/fmt",
         "jsr:@std/fs",
         "jsr:@std/html",
@@ -64,6 +75,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@josefabio/deno-canvas@^1.5.2",
       "jsr:@std/http@^1.0.25",
       "jsr:@std/path@^1.1.4"
     ]
