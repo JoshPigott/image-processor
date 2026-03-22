@@ -1,9 +1,10 @@
 {
   "imports": {
+    "@josefabio/deno-canvas": "jsr:@josefabio/deno-canvas@^1.5.2",
     "@std/http": "jsr:@std/http@^1.0.25",
     "@std/path": "jsr:@std/path@^1.1.4"
   },
   "tasks": {
-    "dev": "deno run --watch --allow-net --allow-read src/server.js"
+    "dev": "deno run --watch --allow-write --allow-net --allow-read src/server.js"
   }
 }
