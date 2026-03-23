@@ -1,7 +1,7 @@
-import { printImageOnCanvas } from "../service/make-canvas.js";
+import { printImageOnCanvas } from "../services/make-canvas.js";
 import { json } from "../utils/json.js";
 
-export async function printImage(_ctx){
+export async function printImage(_ctx) {
   await printImageOnCanvas();
-  return json({"sucess": "Image has been printed"}, {status: 201});
+  return json({ "sucess": "Image has been printed" }, { status: 201 });
 }
