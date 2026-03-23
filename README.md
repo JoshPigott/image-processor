@@ -1,17 +1,22 @@
 # image-processor
+
 - This project allow you to upload image and edit them and download the result
 
 ## Stack
+
 - languages JavaScript HTML CSS
 - Deno
 
 ## Requirements
+
 - Install deno
 - Run `iwr https://deno.land/install.ps1 -useb | iex` (windows)
 
 ## Features
+
 - PPM image decoding
 - Pixels to canvas to file
+- sessions to of muplite users
 
 ## File structure
 
@@ -34,7 +39,8 @@
     ├── server.js
     │
     ├── handlers
-    │   └── image.js
+    │   ├── image.js
+    │   └── sessions.js
     │
     ├── middleware
     │   └── serveStaticFiles.js
@@ -51,13 +57,15 @@
     ├── routes
     │   └── index.js
     │
-    ├── service
+    ├── services
     │   ├── get-image-data.js
-    │   └── make-canvas.js
+    │   ├── make-canvas.js
+    │   └── session.js
     │
     └── utils
         └── json.js
 ```
 
 ## Key logic flow
+
 - Coming soon

@@ -12,11 +12,14 @@
 - Just have an image that I insert (maybe just black) (png)
 - Then get pix data
 
+Makes some session with a session ID (with the session expiring) include
+database Make some which can keep track of fileter and run the to apply them
+Build features (opitctiy, brightness, contest, rgb switches)
 
-- Get a PPM image
-- Get an images bytes
-- Turn thoose bytes into an image
+Plan for tomorrow
 
-- Read the PPM file
-- Get the data by removing the start
-- Loop over the data and write it that way. 
+- THink I need to anything else
+- do things before commit e.g. fmt
+- commit
+
+- build next feature

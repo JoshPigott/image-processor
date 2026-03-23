@@ -1,7 +1,13 @@
 // I will need to import all the routes
+import { dbSetUpDatabase } from "./database/schema.js";
+import { expiredSession } from "./services/session.js";
 import { compiled } from "./routes/index.js";
 import { serveStaticFile } from "./middleware/serveStaticFiles.js";
 import { json } from "./utils/json.js";
+
+dbSetUpDatabase();
+// Makes sure all session expire at the right time
+expiredSession();
 
 // Links request to handlers and servers static files
 async function server(req) {
