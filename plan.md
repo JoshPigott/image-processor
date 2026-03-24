@@ -18,8 +18,5 @@ Build features (opitctiy, brightness, contest, rgb switches)
 
 Plan for tomorrow
 
-- THink I need to anything else
-- do things before commit e.g. fmt
+- pre commit readme fmt plan
 - commit
-
-- build next feature
