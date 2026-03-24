@@ -1,6 +1,6 @@
 import { Database } from "@db/sqlite";
 
-const db = new Database("src/data/database");
+const db = new Database("data/database");
 
 Deno.addSignalListener("SIGINT", () => {
   db.close();

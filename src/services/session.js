@@ -4,18 +4,26 @@ import {
   dbGetAllSession,
   dbGetSession,
 } from "../database/sessions.js";
+import { dbDeleteAllFilters } from "../database/filters.js";
+import { dbDeleteUsersImages } from "../database/image.js";
+
+// Removes users data from database
+function cleanUp(sessionId) {
+  dbDeleteAllFilters(sessionId);
+  dbDeleteUsersImages(sessionId);
+  dbDeleteSession(sessionId);
+  console.log(`Session ${session.sessionId} was deleted`);
+}
 
 // Create a session with a expiry time
 export function createSessionService() {
-  const sixHours = 1000 * 6; //100 * 60 * 60 * 6
-  const timeNow = Date.now();
+  const sixHours = 1000 * 60 * 60 * 6;
   const expiryTime = timeNow + sixHours;
   const sessionId = crypto.randomUUID();
 
   // Deletes session when it expiries
   setTimeout(() => {
-    dbDeleteSession(sessionId);
-    console.log(`Session ${sessionId} was deleted`);
+    cleanUp(sessionId);
   }, sixHours);
 
   // ExpiryTime is a string to safely store large numbers without overflow
@@ -35,14 +43,12 @@ export function expiredSession() {
 
   sessions.forEach((session) => {
     if (session.expiryTime <= timeNow) {
-      dbDeleteSession(session.sessionId);
-      console.log(`Session ${session.sessionId} was deleted`);
+      cleanUp(session.sessionId);
     } else {
       // Deletes session when it expiries
       const timeTillExpiry = session.expiryTime - timeNow;
       setTimeout(() => {
-        dbDeleteSession(session.sessionId);
-        console.log(`Session ${session.sessionId} was deleted`);
+        cleanUp(session.sessionId);
       }, timeTillExpiry);
     }
   });
@@ -52,9 +58,9 @@ export function expiredSession() {
 function getCookies(req) {
   const cookieString = req.headers.get("cookie");
   // Spilts cookies up
-  const splitCookies = cookieString.split(";");
+  let splitCookies = cookieString.split(";");
   // Remove white space
-  spiltCookies = spiltCookies.map((spiltCookie) =>
+  splitCookies = splitCookies.map((spiltCookie) =>
     spiltCookie.trim().replaceAll('"', "")
   );
   // Creates a key value subarrays
@@ -71,4 +77,10 @@ export function getSessionService(req) {
   const sessionId = cookies.sessionId;
   const session = dbGetSession(sessionId);
   return session;
+}
+
+// Returns session Id
+export function getSessionIdService(req) {
+  const session = getSessionService(req);
+  return session.sessionId;
 }

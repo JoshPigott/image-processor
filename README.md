@@ -17,6 +17,7 @@
 - PPM image decoding
 - Pixels to canvas to file
 - sessions to of muplite users
+- filter tracking
 
 ## File structure
 
@@ -38,6 +39,13 @@
 └── src
     ├── server.js
     │
+    ├── database
+    │   ├── connection.js
+    │   ├── filters.js
+    │   ├── image.js
+    │   ├── schema.js
+    │   └── sessions.js
+    │
     ├── handlers
     │   ├── image.js
     │   └── sessions.js
@@ -58,6 +66,7 @@
     │   └── index.js
     │
     ├── services
+    │   ├── filters.js
     │   ├── get-image-data.js
     │   ├── make-canvas.js
     │   └── session.js
@@ -69,3 +78,10 @@
 ## Key logic flow
 
 - Coming soon
+
+Filters of in the database link to the session. Filters row are per image.
+
+## Problems issues know constraints
+
+- you can only add one filter at a time per request.
+- I will need to rewrite the addFilter handler
