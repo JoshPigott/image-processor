@@ -16,9 +16,10 @@
 
 - PPM image decoding
 - Pixels to canvas to file
-- sessions to of muplite users
-- filter tracking
-- editing opacity
+- Sessions to of muplite users
+- Filter tracking
+- Editing opacity
+- Editing brigtness
 
 ## File structure
 

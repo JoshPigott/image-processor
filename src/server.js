@@ -44,4 +44,4 @@ async function safeServer(req) {
   }
 }
 
-Deno.serve({ port: 8000 }, server);
+Deno.serve({ port: 8000 }, safeServer);
