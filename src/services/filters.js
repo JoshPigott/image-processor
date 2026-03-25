@@ -33,10 +33,10 @@ export function isValidFilterService(filterName, value) {
       "max": 100,
     },
     "brightness": {
-      "defaultValue": 50,
+      "defaultValue": 0,
       "type": "range",
-      "min": 0,
-      "max": 100,
+      "min": -50,
+      "max": 50,
     },
     "flip": {
       "defaultValue": 0,
