@@ -50,7 +50,6 @@ function readNumber(i, bytes) {
 
 // Return width and height of image
 function getSize(bytes) {
-  console.log("bytes:", bytes);
   let magicBytesFound = false;
   let width;
   let height;
@@ -79,20 +78,29 @@ function getSize(bytes) {
   }
 }
 
+// Adds opicity into the pixel data
+function rgbToRgba(rgbPixels) {
+  const rgbaPixels = [];
+  for (let i = 2, j = 3; i < rgbPixels.length; i += 3, j += 4) {
+    rgbaPixels[j - 3] = rgbPixels[i - 2]; // Red
+    rgbaPixels[j - 2] = rgbPixels[i - 1]; // Green
+    rgbaPixels[j - 1] = rgbPixels[i]; // Blue
+    rgbaPixels[j] = 255; // alpha (opacity / transparency)
+  }
+  return rgbaPixels;
+}
+
 // Gets bytes then finds the start of the pixels
-export async function getImageData() {
-  const imagePath = "./src/public/assets/dog.ppm";
+export async function getImageData(imagePath) {
   const bytes = await Deno.readFile(imagePath);
 
   const header = getSize(bytes);
   const width = header.width;
   const height = header.height;
 
-  console.log("width:", width);
-  console.log("height:", height);
-
   const pixelStartIndex = getPixelStart(bytes, header.index);
-  const pixels = bytes.slice(pixelStartIndex);
+  let pixels = bytes.slice(pixelStartIndex);
+  pixels = rgbToRgba(pixels);
 
   return { pixels, width, height };
 }

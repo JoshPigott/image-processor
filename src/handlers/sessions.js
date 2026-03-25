@@ -1,7 +1,7 @@
 import {
   createSessionService,
   getSessionService,
-} from "../services/session.js";
+} from "../services/sessions.js";
 import { json } from "../utils/json.js";
 
 export function createSession(_ctx) {

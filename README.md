@@ -18,6 +18,7 @@
 - Pixels to canvas to file
 - sessions to of muplite users
 - filter tracking
+- editing opacity
 
 ## File structure
 
@@ -25,8 +26,6 @@
 ├── deno.json
 ├── deno.lock
 ├── README.md
-├── dog.png
-├── yellow.png
 ├── plan.md
 │
 ├── .vscode
@@ -55,21 +54,22 @@
     │
     ├── public
     │   ├── index.html
+    │   ├── style.css
     │   │
     │   └── assets
     │       ├── dog.png
     │       ├── dog.ppm
-    │       ├── yellow.png
     │       └── yellow.ppm
     │
     ├── routes
     │   └── index.js
     │
     ├── services
+    │   ├── apply-filters.js
     │   ├── filters.js
     │   ├── get-image-data.js
     │   ├── make-canvas.js
-    │   └── session.js
+    │   └── sessions.js
     │
     └── utils
         └── json.js
@@ -84,4 +84,4 @@ Filters of in the database link to the session. Filters row are per image.
 ## Problems issues know constraints
 
 - you can only add one filter at a time per request.
-- I will need to rewrite the addFilter handler
+- I will need to rewrite the addFilter handler to is a bit more readable

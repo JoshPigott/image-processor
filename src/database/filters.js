@@ -1,23 +1,23 @@
 import db from "./connection.js";
 
-export function dbAddFilter(sessionId, imageId, filter, value) {
-  db.prepare(`INSERT INTO filters (sessionId, imageId, filter, value)
-     VALUES (?,?,?,?)`).run(sessionId, imageId, filter, value);
+export function dbAddFilter(sessionId, imageId, filterName, value) {
+  db.prepare(`INSERT INTO filters (sessionId, imageId, filterName, value)
+     VALUES (?,?,?,?)`).run(sessionId, imageId, filterName, value);
 }
 
 // Update filter values
-export function dbUpdateFilter(imageId, filter, value) {
-  db.prepare(`UPDATE filters SET value=? WHERE imageId=? AND filter=?`).run(
+export function dbUpdateFilter(imageId, filterName, value) {
+  db.prepare(`UPDATE filters SET value=? WHERE imageId=? AND filterName=?`).run(
     value,
     imageId,
-    filter,
+    filterName,
   );
 }
 
-export function dbRemoveFilter(imageId, filter) {
-  db.prepare(`DELETE FROM filters WHERE imageId=? AND filter=?`).run(
+export function dbRemoveFilter(imageId, filterName) {
+  db.prepare(`DELETE FROM filters WHERE imageId=? AND filterName=?`).run(
     imageId,
-    filter,
+    filterName,
   );
 }
 
@@ -32,11 +32,12 @@ export function dbDeleteAllFilters(sessionId) {
 }
 
 // Check is a filter is in the database or not
-export function dbIsFilter(imageId, filter) {
-  return db.prepare(`SELECT * FROM filters WHERE imageId=? AND filter=?`).get(
-    imageId,
-    filter,
-  );
+export function dbIsFilter(imageId, filterName) {
+  return db.prepare(`SELECT * FROM filters WHERE imageId=? AND filterName=?`)
+    .get(
+      imageId,
+      filterName,
+    );
 }
 
 export function dbGetFilters(imageId) {
