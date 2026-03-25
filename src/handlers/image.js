@@ -6,12 +6,14 @@ import {
   dbUpdateFilter,
 } from "../database/filters.js";
 import { dbAddImage } from "../database/image.js";
-import { getSessionIdService } from "../services/session.js";
+import { getSessionIdService } from "../services/sessions.js";
 import { isValidFilterService } from "../services/filters.js";
 import { json } from "../utils/json.js";
 
-export async function printImage(_ctx) {
-  await printImageOnCanvas();
+export async function printImage(ctx) {
+  const body = await ctx.req.json();
+  const imageId = body.imageId;
+  await printImageOnCanvas(imageId);
   return json({ "sucess": "Image has been printed" }, { status: 201 });
 }
 
@@ -36,19 +38,19 @@ function chagneFilter(
   filterApplied,
   sessionId,
   imageId,
-  filter,
+  filterName,
   value,
 ) {
   // Defualt value so no need to track and apply filter
   if (isFilterValid.default === true) {
-    dbRemoveFilter(imageId, filter);
+    dbRemoveFilter(imageId, filterName);
     return json({ "sucess": "Default appiled" }, { status: 201 });
   } // Filter is not being applied
   else if (filterApplied === undefined) {
-    dbAddFilter(sessionId, imageId, filter, value);
+    dbAddFilter(sessionId, imageId, filterName, value);
   } // Filter is already being applied
   else {
-    dbUpdateFilter(imageId, filter, value);
+    dbUpdateFilter(imageId, filterName, value);
   }
   return json({ "sucess": "Filter is being applied" }, { status: 201 });
 }
@@ -60,14 +62,13 @@ export async function addFilter(ctx) {
   // as there maybe many filters being applied
   const sessionId = getSessionIdService(ctx.req);
   const imageId = formData.get("imageId");
-  const filter = formData.get("filter");
+  const filterName = formData.get("filterName");
   // This will need to chagne later on when value is not a number
   const value = Number(formData.get("value"));
-  const filterApplied = dbIsFilter(imageId, filter);
+  const filterApplied = dbIsFilter(imageId, filterName);
 
   // Here I need to if valid filter and valid value
-  const isFilterValid = isValidFilterService(filter, value);
-  console.log(isFilterValid);
+  const isFilterValid = isValidFilterService(filterName, value);
 
   if (isFilterValid.valid === false) {
     return json({ "error": "Invalid filter" }, { status: 400 });
@@ -77,7 +78,7 @@ export async function addFilter(ctx) {
     filterApplied,
     sessionId,
     imageId,
-    filter,
+    filterName,
     value,
   );
 }
@@ -86,11 +87,11 @@ export async function addFilter(ctx) {
 export async function removeFilter(ctx) {
   const formData = await ctx.req.formData();
   const imageId = formData.get("imageId");
-  const filter = formData.get("filter");
-  const filterApplied = dbIsFilter(imageId, filter);
+  const filterName = formData.get("filterName");
+  const filterApplied = dbIsFilter(imageId, filterName);
   // Filter is being applied
   if (filterApplied !== undefined) {
-    dbRemoveFilter(imageId, filter);
+    dbRemoveFilter(imageId, filterName);
     return json({ "sucess": "Filter was removed" }, { status: 201 });
   } // Invalid filter
   else {

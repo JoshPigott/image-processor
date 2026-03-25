@@ -15,7 +15,7 @@ export function dbSetUpDatabase() {
 
   // Filters
   db.prepare(`CREATE TABLE IF NOT EXISTS filters (
-     sessionId TEXT, imageId TEXT, filter TEXT, value TEXT, 
+     sessionId TEXT, imageId TEXT, filterName TEXT, value TEXT, 
      FOREIGN KEY (sessionId) REFERENCES sessions(sessionId),
      FOREIGN KEY (imageId) REFERENCES images(imageId))`).run();
 }

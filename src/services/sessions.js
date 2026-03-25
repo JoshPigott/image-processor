@@ -12,12 +12,13 @@ function cleanUp(sessionId) {
   dbDeleteAllFilters(sessionId);
   dbDeleteUsersImages(sessionId);
   dbDeleteSession(sessionId);
-  console.log(`Session ${session.sessionId} was deleted`);
+  console.log(`Session ${sessionId} was deleted`);
 }
 
 // Create a session with a expiry time
 export function createSessionService() {
   const sixHours = 1000 * 60 * 60 * 6;
+  const timeNow = Date.now();
   const expiryTime = timeNow + sixHours;
   const sessionId = crypto.randomUUID();
 

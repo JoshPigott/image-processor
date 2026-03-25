@@ -1,6 +1,6 @@
 // I will need to import all the routes
 import { dbSetUpDatabase } from "./database/schema.js";
-import { expiredSession } from "./services/session.js";
+import { expiredSession } from "./services/sessions.js";
 import { compiled } from "./routes/index.js";
 import { serveStaticFile } from "./middleware/serveStaticFiles.js";
 import { json } from "./utils/json.js";
@@ -44,4 +44,4 @@ async function safeServer(req) {
   }
 }
 
-Deno.serve({ port: 8000 }, safeServer);
+Deno.serve({ port: 8000 }, server);

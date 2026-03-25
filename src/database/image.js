@@ -15,7 +15,6 @@ export function dbDeleteUsersImages(sessionId) {
   db.prepare(`DELETE FROM images WHERE sessionId=?`).run(sessionId);
 }
 
-export function dbGetImage() {
-  const images = db.prepare(`SELECT * FROM images`).all();
-  return images;
+export function dbGetImage(imageId) {
+  return db.prepare(`SELECT * FROM images WHERE imageId=?`).get(imageId);
 }

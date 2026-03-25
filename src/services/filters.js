@@ -1,7 +1,7 @@
 // Checks if filter value is valid and is default value or not
 function isValidFilterValueService(filterValueInfo, value) {
   // Checks if value is in a ragne of allowed values
-  if (filterValueInfo.type === "ragne") {
+  if (filterValueInfo.type === "range") {
     if (value === filterValueInfo.defaultValue) {
       return { "valid": true, "default": true };
     } else if (filterValueInfo.min <= value && filterValueInfo.max >= value) {
@@ -23,18 +23,18 @@ function isValidFilterValueService(filterValueInfo, value) {
 }
 
 // Whitelists filters and filter values
-export function isValidFilterService(filter, value) {
+export function isValidFilterService(filterName, value) {
   // All filters not built
   const validFilters = {
     "opacity": {
-      "defaultValue": 50,
+      "defaultValue": 100,
       "type": "range",
       "min": 0,
       "max": 100,
     },
     "brightness": {
       "defaultValue": 50,
-      "type": "ragne",
+      "type": "range",
       "min": 0,
       "max": 100,
     },
@@ -44,7 +44,7 @@ export function isValidFilterService(filter, value) {
       "values": [90, 180, 270],
     },
   };
-  const filterValueInfo = validFilters?.[filter];
+  const filterValueInfo = validFilters?.[filterName];
 
   // Filter does not exist
   if (!filterValueInfo) return { "valid": false };
