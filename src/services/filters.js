@@ -2,7 +2,9 @@
 function isValidFilterValueService(filterValueInfo, value) {
   // Checks if value is in a ragne of allowed values
   if (filterValueInfo.type === "range") {
+    value = Number(value);
     if (value === filterValueInfo.defaultValue) {
+      console.log(value);
       return { "valid": true, "default": true };
     } else if (filterValueInfo.min <= value && filterValueInfo.max >= value) {
       return { "valid": true, "default": false };
@@ -10,7 +12,19 @@ function isValidFilterValueService(filterValueInfo, value) {
       return { "valid": false };
     }
   } // Checks if value is in a arrary of possble values
+  else if (filterValueInfo.type === "boolean") {
+    console.log("value:", value);
+    console.log("filterValueInfo.defaultValue:", filterValueInfo.defaultValue);
+    if (value === filterValueInfo.defaultValue) {
+      return { "valid": true, "default": true };
+    }
+    return {
+      "valid": filterValueInfo.values.includes(value),
+      "default": false,
+    };
+  } // Checks if value is in a arrary of possble values
   else if (filterValueInfo.type === "specific") {
+    value = Number(value);
     if (value === filterValueInfo.defaultValue) {
       return { "valid": true, "default": true };
     }
@@ -19,6 +33,7 @@ function isValidFilterValueService(filterValueInfo, value) {
       "default": false,
     };
   }
+
   return { "valid": false };
 }
 
@@ -27,26 +42,31 @@ export function isValidFilterService(filterName, value) {
   // All filters not built
   const validFilters = {
     "opacity": {
-      "defaultValue": 100,
       "type": "range",
+      "defaultValue": 100,
       "min": 0,
       "max": 100,
     },
     "brightness": {
-      "defaultValue": 0,
       "type": "range",
+      "defaultValue": 0,
       "min": -50,
       "max": 50,
     },
     "contrast": {
-      "defaultValue": 1,
       "type": "range",
+      "defaultValue": 1,
       "min": 0.5,
       "max": 1.5,
     },
+    "greyscale": {
+      "type": "boolean",
+      "defaultValue": "false",
+      "values": ["true"],
+    },
     "flip": {
-      "defaultValue": 0,
       "type": "specific",
+      "defaultValue": 0,
       "values": [90, 180, 270],
     },
   };

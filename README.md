@@ -18,8 +18,12 @@
 - Pixels to canvas to file
 - Sessions to of muplite users
 - Filter tracking
+
+- Filters
 - Editing opacity
 - Editing brigtness
+- Editing contrast
+- greyscale
 
 ## File structure
 
