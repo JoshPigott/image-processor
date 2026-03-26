@@ -17,10 +17,24 @@ function applyOpacityService(pixels, opacityValue) {
 
 // Adds or decrease pixel rgb values to chagne brightness
 function applyBrightnessService(pixels, brightnessValue) {
-  for (let i = 2; i < pixels.length; i += 4) { //
-    pixels[i - 2] = clapPixel(pixels[i - 2] + brightnessValue); // r
-    pixels[i - 1] = clapPixel(pixels[i - 1] + brightnessValue); // g
-    pixels[i] = clapPixel(pixels[i] + brightnessValue); // b
+  // Skips over opacity
+  for (let i = 0; i < pixels.length; i += 4) {
+    for (let j = 0; j < 3; j++) {
+      pixels[i + j] = clapPixel(pixels[i + j] + brightnessValue);
+    }
+  }
+}
+
+// Changes brightness by increase or decreasing distance from midpoint (128)
+function applyContrastService(pixels, contrastMultiplierValue) {
+  const midpoint = 128;
+  // Skips over opacity
+  for (let i = 0; i < pixels.length; i += 4) {
+    for (let j = 0; j < 3; j++) {
+      const distanceFromMidpoint = pixels[i + j] - midpoint;
+      const newDistance = distanceFromMidpoint * contrastMultiplierValue;
+      pixels[i + j] = clapPixel(118 + newDistance);
+    }
   }
 }
 
@@ -29,6 +43,7 @@ export function applyFiltersService(imageId, pixels) {
   const filterOrder = {
     "opacity": 0,
     "brightness": 1,
+    "contrast": 2,
   };
   // Get all the filters being applied
   const filters = dbGetFilters(imageId);
@@ -43,6 +58,8 @@ export function applyFiltersService(imageId, pixels) {
       applyOpacityService(pixels, Number(filter.value));
     } else if (filter.filterName === "brightness") {
       applyBrightnessService(pixels, Number(filter.value));
+    } else if (filter.filterName === "contrast") {
+      applyContrastService(pixels, Number(filter.value));
     }
     // Other filter will be add
   });

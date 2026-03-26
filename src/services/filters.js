@@ -38,6 +38,12 @@ export function isValidFilterService(filterName, value) {
       "min": -50,
       "max": 50,
     },
+    "contrast": {
+      "defaultValue": 1,
+      "type": "range",
+      "min": 0.5,
+      "max": 1.5,
+    },
     "flip": {
       "defaultValue": 0,
       "type": "specific",
