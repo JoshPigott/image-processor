@@ -1,10 +1,57 @@
+// Whitelist all valid filter with a default value, type and allow values
+function defineValidFilterService() {
+  // All filters not built
+  const validFilters = {
+    "opacity": {
+      "type": "range",
+      "defaultValue": 100,
+      "min": 0,
+      "max": 100,
+    },
+    "brightness": {
+      "type": "range",
+      "defaultValue": 0,
+      "min": -50,
+      "max": 50,
+    },
+    "contrast": {
+      "type": "range",
+      "defaultValue": 1,
+      "min": 0.5,
+      "max": 1.5,
+    },
+    "greyscale": {
+      "type": "boolean",
+      "defaultValue": "false",
+      "values": ["true"],
+    },
+    "saturation": {
+      "type": "range",
+      "defaultValue": 1,
+      "min": 0.5,
+      "max": 2.0,
+    },
+    "vibrance": {
+      "type": "range",
+      "defaultValue": 1,
+      "min": 0,
+      "max": 2,
+    },
+    "flip": {
+      "type": "specific",
+      "defaultValue": 0,
+      "values": [90, 180, 270],
+    },
+  };
+  return validFilters;
+}
+
 // Checks if filter value is valid and is default value or not
 function isValidFilterValueService(filterValueInfo, value) {
   // Checks if value is in a ragne of allowed values
   if (filterValueInfo.type === "range") {
     value = Number(value);
     if (value === filterValueInfo.defaultValue) {
-      console.log(value);
       return { "valid": true, "default": true };
     } else if (filterValueInfo.min <= value && filterValueInfo.max >= value) {
       return { "valid": true, "default": false };
@@ -39,37 +86,7 @@ function isValidFilterValueService(filterValueInfo, value) {
 
 // Whitelists filters and filter values
 export function isValidFilterService(filterName, value) {
-  // All filters not built
-  const validFilters = {
-    "opacity": {
-      "type": "range",
-      "defaultValue": 100,
-      "min": 0,
-      "max": 100,
-    },
-    "brightness": {
-      "type": "range",
-      "defaultValue": 0,
-      "min": -50,
-      "max": 50,
-    },
-    "contrast": {
-      "type": "range",
-      "defaultValue": 1,
-      "min": 0.5,
-      "max": 1.5,
-    },
-    "greyscale": {
-      "type": "boolean",
-      "defaultValue": "false",
-      "values": ["true"],
-    },
-    "flip": {
-      "type": "specific",
-      "defaultValue": 0,
-      "values": [90, 180, 270],
-    },
-  };
+  const validFilters = defineValidFilterService();
   const filterValueInfo = validFilters?.[filterName];
 
   // Filter does not exist
