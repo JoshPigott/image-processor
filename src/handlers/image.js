@@ -64,7 +64,7 @@ export async function addFilter(ctx) {
   const imageId = formData.get("imageId");
   const filterName = formData.get("filterName");
   // This will need to chagne later on when value is not a number
-  const value = Number(formData.get("value"));
+  const value = formData.get("value");
   const filterApplied = dbIsFilter(imageId, filterName);
 
   // Here I need to if valid filter and valid value

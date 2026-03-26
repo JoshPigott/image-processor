@@ -38,12 +38,27 @@ function applyContrastService(pixels, contrastMultiplierValue) {
   }
 }
 
+function applyGreyscaleService(pixels) {
+  for (let i = 0; i + 2 < pixels.length; i += 4) {
+    const red = pixels[i];
+    const green = pixels[i + 1];
+    const blue = pixels[i + 2];
+
+    const grey = 0.72 * red + 0.21 * green + 0.07 * blue;
+
+    pixels[i] = grey;
+    pixels[i + 1] = grey;
+    pixels[i + 2] = grey;
+  }
+}
+
 export function applyFiltersService(imageId, pixels) {
   // Links filter to order of applying
   const filterOrder = {
     "opacity": 0,
     "brightness": 1,
     "contrast": 2,
+    "greyscale": 3,
   };
   // Get all the filters being applied
   const filters = dbGetFilters(imageId);
@@ -60,6 +75,8 @@ export function applyFiltersService(imageId, pixels) {
       applyBrightnessService(pixels, Number(filter.value));
     } else if (filter.filterName === "contrast") {
       applyContrastService(pixels, Number(filter.value));
+    } else if (filter.filterName === "greyscale") {
+      applyGreyscaleService(pixels);
     }
     // Other filter will be add
   });
