@@ -38,17 +38,56 @@ function applyContrastService(pixels, contrastMultiplierValue) {
   }
 }
 
+// Turn each pixel specific amount of greyness
 function applyGreyscaleService(pixels) {
   for (let i = 0; i + 2 < pixels.length; i += 4) {
     const red = pixels[i];
     const green = pixels[i + 1];
     const blue = pixels[i + 2];
 
-    const grey = 0.72 * red + 0.21 * green + 0.07 * blue;
+    const greyscale = Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
 
-    pixels[i] = grey;
-    pixels[i + 1] = grey;
-    pixels[i + 2] = grey;
+    pixels[i] = greyscale;
+    pixels[i + 1] = greyscale;
+    pixels[i + 2] = greyscale;
+  }
+}
+
+// Change distance from grey average with a constant multiplier
+function applySaturationService(pixels, satrationMultiplierValue) {
+  for (let i = 0; i + 2 < pixels.length; i += 4) {
+    const red = pixels[i];
+    const green = pixels[i + 1];
+    const blue = pixels[i + 2];
+
+    const greyAverage = Math.round((red + green + blue) / 3);
+
+    // Increases distance from the grey average
+    for (let j = 0; j < 3; j++) {
+      const distanceFromGreyAverage = pixels[i + j] - greyAverage;
+      const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
+      pixels[i + j] = clapPixel(greyAverage + newDistance);
+    }
+  }
+}
+
+// Change distance from grey average depending upon how far it is away from grey average
+function applyVibranceService(pixels, vibranceValue) {
+  for (let i = 0; i + 2 < pixels.length; i += 4) {
+    const red = pixels[i];
+    const green = pixels[i + 1];
+    const blue = pixels[i + 2];
+
+    const greyAverage = Math.round((red + green + blue) / 3);
+
+    // Increases distance from the grey average
+    for (let j = 0; j < 3; j++) {
+      const distanceFromGreyAverage = pixels[i + j] - greyAverage;
+      const vibranceMultiplier = 1 +
+        vibranceValue * (1 - (distanceFromGreyAverage / 255));
+      const newDistance = distanceFromGreyAverage * vibranceMultiplier;
+      pixels[i + j] = clapPixel(greyAverage + newDistance);
+    }
   }
 }
 
@@ -77,6 +116,10 @@ export function applyFiltersService(imageId, pixels) {
       applyContrastService(pixels, Number(filter.value));
     } else if (filter.filterName === "greyscale") {
       applyGreyscaleService(pixels);
+    } else if (filter.filterName === "saturation") {
+      applySaturationService(pixels, Number(filter.value));
+    } else if (filter.filterName === "vibrance") {
+      applyVibranceService(pixels, Number(filter.value));
     }
     // Other filter will be add
   });

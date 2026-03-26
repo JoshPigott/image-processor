@@ -86,7 +86,5 @@
 
 Filters of in the database link to the session. Filters row are per image.
 
-## Problems issues know constraints
-
 - you can only add one filter at a time per request.
 - I will need to rewrite the addFilter handler to is a bit more readable
