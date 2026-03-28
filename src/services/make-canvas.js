@@ -6,19 +6,16 @@ import { dbGetImage } from "../database/image.js";
 export async function printImageOnCanvas(imageId) {
   const imageInfo = dbGetImage(imageId);
   const imageData = await getImageData(imageInfo.imagePath);
-  const pixels = imageData.pixels;
-  const width = imageData.width;
-  const height = imageData.height;
 
-  applyFiltersService(imageId, pixels);
-
-  const canvas = createCanvas(width, height);
+  // I will need to edit width and height values
+  applyFiltersService(imageId, imageData);
+  const canvas = createCanvas(imageData.width, imageData.height);
   const canvasCtx = canvas.getContext("2d");
-  const output = canvasCtx.createImageData(width, height);
+  const output = canvasCtx.createImageData(imageData.width, imageData.height);
 
   // Places each pixel into the canvas data
-  for (let i = 0; i < pixels.length; i += 1) {
-    output.data[i] = pixels[i];
+  for (let i = 0; i < imageData.pixels.length; i += 1) {
+    output.data[i] = imageData.pixels[i];
   }
 
   canvasCtx.putImageData(output, 0, 0);

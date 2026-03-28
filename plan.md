@@ -13,7 +13,6 @@
 
 ### Features I want to build at some point
 
-- Vibrance
 - Harder ones
 - Image rotating
 - Image cropping

@@ -7,7 +7,7 @@ import {
 } from "../database/filters.js";
 import { dbAddImage } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
-import { isValidFilterService } from "../services/filters.js";
+import { isValidFilterService } from "../services/filters-validate.js";
 import { json } from "../utils/json.js";
 
 export async function printImage(ctx) {
