@@ -118,6 +118,19 @@ Filters of in the database link to the session. Filters row are per image.
   - `vibranceMultiplier = 1 + vibranceValue * (1 - (distanceFromGreyAverage / 255))`
   - This makes small distance from grey chagne more and large ones less
   - Effect: Same as saturation prodects things like skin tones
+- **rotation 180 degrees**
+  - calculates oppsite pixels to swap with
+  - swaps inplace first pixel with 4th last last pixel ect
+  - That keeps RGBA order
+  - Effect: image rotated 180 degrees
+- **rotation 90 and 270 degrees**
+  - Find where pixel will be in new image adds to a new array (inplace not
+    possible)
+  - 90 rotation `newX = newWidth - 1 - y;` and `newY = x;`
+  - 270 rotation `newX = y;` and `newY = newHeight - 1 - x;`
+  - Screen coordinates reverse rotation direction so x and x formula are adjust
+    to this
+  - Effect: image rotated 90 or 270 degrees
 
 ## Problems issues know constraints
 

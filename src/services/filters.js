@@ -90,18 +90,27 @@ export function applyVibranceService(pixels, vibranceValue) {
 }
 
 // Calculates pixel roatation with x and y values
-function rotate90(imageData) {
+function rotateBy90(imageData, rotationValue) {
+  const clockwiseRotation = rotationValue === 90 ? true : false;
   // Height and width swap
   const newWidth = imageData.height;
   const newHeight = imageData.width;
   const rgbaNewArray = new Uint8ClampedArray(newWidth * newHeight * 4);
 
   for (let i = 0; i < imageData.pixels.length / 4; i++) {
+    let newX;
+    let newY;
     const x = i % imageData.width;
     const y = Math.floor(i / imageData.width);
 
-    const newX = y;
-    const newY = newHeight - 1 - x;
+    if (clockwiseRotation) {
+      newX = newWidth - 1 - y;
+      newY = x;
+    } // Anti clockwise rotation (270 degrees)
+    else {
+      newX = y;
+      newY = newHeight - 1 - x;
+    }
 
     const newIndex = (newY * newWidth) + newX;
     for (let j = 0; j < 4; j++) {
@@ -136,7 +145,7 @@ export function applyRotationService(imageData, rotationValue) {
   //const pixelsArray2d = getArray2d(pixels, width, height);
   if (rotationValue == 180) {
     rotate180(imageData.pixels);
-  } else if (rotationValue == 90) {
-    rotate90(imageData);
+  } else if (rotationValue == 90 || rotationValue == 270) {
+    rotateBy90(imageData, rotationValue);
   }
 }
