@@ -80,7 +80,7 @@ function getSize(bytes) {
 
 // Adds opicity into the pixel data
 function rgbToRgba(rgbPixels) {
-  const rgbaPixels = [];
+  const rgbaPixels = new Uint8ClampedArray(rgbPixels.length / 3 * 4);
   for (let i = 2, j = 3; i < rgbPixels.length; i += 3, j += 4) {
     rgbaPixels[j - 3] = rgbPixels[i - 2]; // Red
     rgbaPixels[j - 2] = rgbPixels[i - 1]; // Green
