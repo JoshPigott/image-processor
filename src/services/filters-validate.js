@@ -42,6 +42,18 @@ function defineValidFilterService() {
       "defaultValue": 0,
       "values": [90, 180, 270],
     },
+    "sharpen": {
+      "type": "range",
+      "defaultValue": 0,
+      "min": 0,
+      "max": 10,
+    },
+    "blur": {
+      "type": "range",
+      "defaultValue": 0,
+      "min": 0,
+      "max": 1.5,
+    },
   };
   return validFilters;
 }
@@ -60,8 +72,6 @@ function isValidFilterValueService(filterValueInfo, value) {
     }
   } // Checks if value is in a arrary of possble values
   else if (filterValueInfo.type === "boolean") {
-    console.log("value:", value);
-    console.log("filterValueInfo.defaultValue:", filterValueInfo.defaultValue);
     if (value === filterValueInfo.defaultValue) {
       return { "valid": true, "default": true };
     }

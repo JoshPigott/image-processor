@@ -25,7 +25,7 @@ export async function addImage(ctx) {
   const imageId = crypto.randomUUID();
 
   // Later this come with the file image file
-  const imagePath = "./src/public/assets/dog.ppm";
+  const imagePath = `./src/public/assets/${imageName}.ppm`;
 
   dbAddImage(sessionId, imageId, imageName, imagePath);
   console.log("image id:", imageId);

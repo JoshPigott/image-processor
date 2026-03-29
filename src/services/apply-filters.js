@@ -7,6 +7,8 @@ import {
   applyRotationService,
   applySaturationService,
   applyVibranceService,
+  blurService,
+  sharpeningService,
 } from "../services/filters.js";
 
 // Apply all the filters in the database in a specific order
@@ -16,7 +18,12 @@ export function applyFiltersService(imageId, imageData) {
     "opacity": 0,
     "brightness": 1,
     "contrast": 2,
-    "greyscale": 3,
+    "saturation": 3,
+    "vibrance": 4,
+    "greyscale": 5,
+    "rotate": 6,
+    "blur": 7,
+    "sharpen": 8,
   };
   // Get all the filters being applied
   const filters = dbGetFilters(imageId);
@@ -25,25 +32,27 @@ export function applyFiltersService(imageId, imageData) {
     filterOrder[filterOne.filterName] - filterOrder[filterTwo.filterName];
   });
 
-  const pixels = imageData.pixels;
   filters.forEach((filter) => {
     // Value stored as TEXT so filter value will need to convert back to a number
     if (filter.filterName === "opacity") {
-      applyOpacityService(pixels, Number(filter.value));
+      applyOpacityService(imageData.rgbaValues, Number(filter.value));
     } else if (filter.filterName === "brightness") {
-      applyBrightnessService(pixels, Number(filter.value));
+      applyBrightnessService(imageData.rgbaValues, Number(filter.value));
     } else if (filter.filterName === "contrast") {
-      applyContrastService(pixels, Number(filter.value));
-    } else if (filter.filterName === "greyscale") {
-      applyGreyscaleService(pixels);
+      applyContrastService(imageData.rgbaValues, Number(filter.value));
     } else if (filter.filterName === "saturation") {
-      applySaturationService(pixels, Number(filter.value));
+      applySaturationService(imageData.rgbaValues, Number(filter.value));
     } else if (filter.filterName === "vibrance") {
-      applyVibranceService(pixels, Number(filter.value));
+      applyVibranceService(imageData.rgbaValues, Number(filter.value));
+    } else if (filter.filterName === "greyscale") {
+      applyGreyscaleService(imageData.rgbaValues);
     } else if (filter.filterName === "rotate") {
       applyRotationService(imageData, Number(filter.value));
+    } else if (filter.filterName === "blur") {
+      blurService(imageData, Number(filter.value));
+    } else if (filter.filterName === "sharpen") {
+      sharpeningService(imageData, Number(filter.value));
     }
-    console.log("end", pixels);
     // Other filter will be add
   });
 }
