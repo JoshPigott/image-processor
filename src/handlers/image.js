@@ -5,8 +5,13 @@ import {
   dbRemoveFilter,
   dbUpdateFilter,
 } from "../database/filters.js";
-import { dbAddImage } from "../database/image.js";
+import {
+  dbAddImage,
+  dbGetImage,
+  dbGetImageDimensions,
+} from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
+import { getImageSizeService } from "../services/get-image-data.js";
 import { isValidFilterService } from "../services/filters-validate.js";
 import { json } from "../utils/json.js";
 
@@ -24,10 +29,20 @@ export async function addImage(ctx) {
   const imageName = formData.get("imageName");
   const imageId = crypto.randomUUID();
 
+  // Later on in here I will need to valid the image
   // Later this come with the file image file
-  const imagePath = `./src/public/assets/${imageName}.ppm`;
 
-  dbAddImage(sessionId, imageId, imageName, imagePath);
+  const imagePath = `./src/public/assets/${imageName}.ppm`;
+  const dimensions = await getImageSizeService(imagePath);
+
+  dbAddImage(
+    sessionId,
+    imageId,
+    imageName,
+    imagePath,
+    dimensions.width,
+    dimensions.height,
+  );
   console.log("image id:", imageId);
   return json({ "sucess": "Image has been added" }, { status: 201 });
 }
@@ -35,12 +50,12 @@ export async function addImage(ctx) {
 // Updates filter value in db and return response
 function chagneFilter(
   isFilterValid,
-  filterApplied,
   sessionId,
   imageId,
   filterName,
   value,
 ) {
+  const filterApplied = dbIsFilter(imageId, filterName);
   // Defualt value so no need to track and apply filter
   if (isFilterValid.default === true) {
     dbRemoveFilter(imageId, filterName);
@@ -57,25 +72,24 @@ function chagneFilter(
 
 // Adds filter to database unless valid
 export async function addFilter(ctx) {
-  const formData = await ctx.req.formData();
-  // I may need to loop tought this later one and
-  // as there maybe many filters being applied
   const sessionId = getSessionIdService(ctx.req);
+  const formData = await ctx.req.formData();
   const imageId = formData.get("imageId");
   const filterName = formData.get("filterName");
-  // This will need to chagne later on when value is not a number
   const value = formData.get("value");
-  const filterApplied = dbIsFilter(imageId, filterName);
+  const imageDimensions = await dbGetImageDimensions(imageId);
 
-  // Here I need to if valid filter and valid value
-  const isFilterValid = isValidFilterService(filterName, value);
+  const isFilterValid = isValidFilterService(
+    filterName,
+    value,
+    imageDimensions,
+  );
 
   if (isFilterValid.valid === false) {
     return json({ "error": "Invalid filter" }, { status: 400 });
   }
   return chagneFilter(
     isFilterValid,
-    filterApplied,
     sessionId,
     imageId,
     filterName,

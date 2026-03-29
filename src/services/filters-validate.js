@@ -54,48 +54,89 @@ function defineValidFilterService() {
       "min": 0,
       "max": 1.5,
     },
+    "crop": {
+      "type": "cropping",
+    },
   };
   return validFilters;
 }
 
-// Checks if filter value is valid and is default value or not
-function isValidFilterValueService(filterValueInfo, value) {
-  // Checks if value is in a ragne of allowed values
-  if (filterValueInfo.type === "range") {
-    value = Number(value);
-    if (value === filterValueInfo.defaultValue) {
-      return { "valid": true, "default": true };
-    } else if (filterValueInfo.min <= value && filterValueInfo.max >= value) {
-      return { "valid": true, "default": false };
-    } else {
-      return { "valid": false };
-    }
-  } // Checks if value is in a arrary of possble values
-  else if (filterValueInfo.type === "boolean") {
-    if (value === filterValueInfo.defaultValue) {
-      return { "valid": true, "default": true };
-    }
-    return {
-      "valid": filterValueInfo.values.includes(value),
-      "default": false,
-    };
-  } // Checks if value is in a arrary of possble values
-  else if (filterValueInfo.type === "specific") {
-    value = Number(value);
-    if (value === filterValueInfo.defaultValue) {
-      return { "valid": true, "default": true };
-    }
-    return {
-      "valid": filterValueInfo.values.includes(value),
-      "default": false,
-    };
+// Checks if value is in a ragne of allowed values
+function validateRange(value, filterValueInfo) {
+  value = Number(value);
+  if (value === filterValueInfo.defaultValue) {
+    return { "valid": true, "default": true };
+  } else if (filterValueInfo.min <= value && filterValueInfo.max >= value) {
+    return { "valid": true, "default": false };
+  } else {
+    return { "valid": false };
   }
+}
 
+// Checks if value is in a arrary of possble values
+function validateBoolean(value, filterValueInfo) {
+  if (value === filterValueInfo.defaultValue) {
+    return { "valid": true, "default": true };
+  }
+  return {
+    "valid": filterValueInfo.values.includes(value),
+    "default": false,
+  };
+}
+
+// Checks if value is in a arrary of possble values
+function validateSpecific(value, filterValueInfo) {
+  value = Number(value);
+  if (value === filterValueInfo.defaultValue) {
+    return { "valid": true, "default": true };
+  }
+  return {
+    "valid": filterValueInfo.values.includes(value),
+    "default": false,
+  };
+}
+
+// Check that cropping values are postive and not big then image
+function validateCropping(value, imageDimensions) {
+  try {
+    // Converts cropping from string into array
+    const croppingValues = JSON.parse(value);
+    croppingValues.map((croppingValue) => Number(croppingValue));
+
+    const top = croppingValues[0];
+    const bottom = croppingValues[1];
+    const left = croppingValues[2];
+    const right = croppingValues[3];
+
+    if (croppingValues === [0, 0, 0, 0]) {
+      return { "valid": true, "default": true };
+    } else if (top + bottom >= imageDimensions.height) {
+      return { "valid": false };
+    } else if (left + right >= imageDimensions.width) return { "valid": false };
+    else if (top < 0 || bottom < 0 || left < 0 || right < 0) {
+      return { "valid": false };
+    } else return { "valid": true, "default": false };
+  } catch (_err) {
+    return { "valid": false };
+  }
+}
+
+// Checks if filter value is valid and is default value or not
+function isValidFilterValueService(filterValueInfo, value, imageDimensions) {
+  if (filterValueInfo.type === "range") {
+    return validateRange(value, filterValueInfo);
+  } else if (filterValueInfo.type === "boolean") {
+    return validateBoolean(value, filterValueInfo);
+  } else if (filterValueInfo.type === "specific") {
+    return validateSpecific(value, filterValueInfo);
+  } else if (filterValueInfo.type === "cropping") {
+    return validateCropping(value, imageDimensions);
+  }
   return { "valid": false };
 }
 
 // Whitelists filters and filter values
-export function isValidFilterService(filterName, value) {
+export function isValidFilterService(filterName, value, imageDimensions) {
   const validFilters = defineValidFilterService();
   const filterValueInfo = validFilters?.[filterName];
 
@@ -103,5 +144,5 @@ export function isValidFilterService(filterName, value) {
   if (!filterValueInfo) return { "valid": false };
 
   // Checks values
-  return isValidFilterValueService(filterValueInfo, value);
+  return isValidFilterValueService(filterValueInfo, value, imageDimensions);
 }

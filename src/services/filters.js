@@ -291,3 +291,37 @@ export function sharpeningService(imageData, multiplier) {
 export function blurService(imageData, multiplier) {
   applyKernelEffect(imageData, "blur", multiplier);
 }
+
+function plotPixel(i, rgbaNewArray, imageData) {
+  for (let j = 0; j < 4; j++) {
+    rgbaNewArray.push(imageData.rgbaValues[i * 4 + j]);
+  }
+}
+
+export function croppingService(imageData, croppingValues) {
+  const rgbaNewArray = [];
+  // Converts cropping from string into array
+  croppingValues = JSON.parse(croppingValues);
+  croppingValues.map((croppingValue) => Number(croppingValue));
+
+  const top = croppingValues[0];
+  const bottom = croppingValues[1];
+  const left = croppingValues[2];
+  const right = croppingValues[3];
+
+  const startIndex = imageData.width * top;
+  const endIndex = (imageData.rgbaValues.length / 4) -
+    (imageData.width * bottom);
+
+  // For loop need to cut pixels on the right and left side
+  for (let i = startIndex; i < endIndex; i++) {
+    const Xplacment = i % imageData.width;
+    if (Xplacment < left) continue;
+    // It is <= not < as imageData.width - Xplacment starts at 1
+    else if (imageData.width - Xplacment <= right) continue;
+    plotPixel(i, rgbaNewArray, imageData);
+  }
+  imageData.width = imageData.width - left - right;
+  imageData.height = imageData.height - top - bottom;
+  imageData.rgbaValues = rgbaNewArray;
+}

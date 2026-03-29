@@ -10,7 +10,8 @@ export function dbSetUpDatabase() {
   // Images
   db.prepare(
     `CREATE TABLE IF NOT EXISTS images (sessionId TEXT, imageId TEXT PRIMARY KEY, imageName TEXT,
-     imagePath TEXT, FOREIGN KEY (sessionId) REFERENCES sessions(sessionId))`,
+     imagePath TEXT, width INTEGER, height INTEGER,
+     FOREIGN KEY (sessionId) REFERENCES sessions(sessionId))`,
   ).run();
 
   // Filters

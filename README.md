@@ -147,6 +147,11 @@ Filters of in the database link to the session. Filters row are per image.
   - Uses this formula
   - `(1 - multiplier) * rgbaValue + (multiplier * 0.125) * directNeighboursSum + (multiplier * 0.0625) * diagonalNeighboursSum`
   - Effect: Removes fine details and softens edges
+- **image cropping**
+  - Calculates which pixels should be removed
+  - For left and right cropping calculates distance from the edge
+    `Xplacment = i % imageData.width`
+  - Effect: Removes outer edges of image
 
 ## Problems issues know constraints
 
