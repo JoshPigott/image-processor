@@ -91,7 +91,7 @@ function rgbToRgba(rgbPixels) {
 }
 
 // Gets bytes then finds the start of the pixels
-export async function getImageData(imagePath) {
+export async function getImageDataService(imagePath) {
   const bytes = await Deno.readFile(imagePath);
 
   const header = getSize(bytes);
@@ -103,4 +103,13 @@ export async function getImageData(imagePath) {
   rgbaValues = rgbToRgba(rgbaValues);
 
   return { rgbaValues, width, height };
+}
+
+export async function getImageSizeService(imagePath) {
+  const bytes = await Deno.readFile(imagePath);
+
+  const header = getSize(bytes);
+  const width = header.width;
+  const height = header.height;
+  return { width, height };
 }

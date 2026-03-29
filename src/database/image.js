@@ -1,8 +1,17 @@
 import db from "./connection.js";
 
-export function dbAddImage(sessionId, imageId, imageName, imagePath) {
-  db.prepare(`INSERT INTO images (sessionId, imageId, imageName, imagePath)
-     VALUES(?,?,?,?)`).run(sessionId, imageId, imageName, imagePath);
+export function dbAddImage(
+  sessionId,
+  imageId,
+  imageName,
+  imagePath,
+  width,
+  height,
+) {
+  db.prepare(
+    `INSERT INTO images (sessionId, imageId, imageName, imagePath, width, height)
+     VALUES(?,?,?,?,?,?)`,
+  ).run(sessionId, imageId, imageName, imagePath, width, height);
 }
 
 // When user deletes image
@@ -17,4 +26,10 @@ export function dbDeleteUsersImages(sessionId) {
 
 export function dbGetImage(imageId) {
   return db.prepare(`SELECT * FROM images WHERE imageId=?`).get(imageId);
+}
+
+export function dbGetImageDimensions(imageId) {
+  return db.prepare(`SELECT width, height FROM images WHERE imageId=?`).get(
+    imageId,
+  );
 }

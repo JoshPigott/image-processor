@@ -8,6 +8,7 @@ import {
   applySaturationService,
   applyVibranceService,
   blurService,
+  croppingService,
   sharpeningService,
 } from "../services/filters.js";
 
@@ -21,9 +22,10 @@ export function applyFiltersService(imageId, imageData) {
     "saturation": 3,
     "vibrance": 4,
     "greyscale": 5,
-    "rotate": 6,
-    "blur": 7,
-    "sharpen": 8,
+    "blur": 6,
+    "sharpen": 7,
+    "crop": 8,
+    "rotate": 9,
   };
   // Get all the filters being applied
   const filters = dbGetFilters(imageId);
@@ -46,13 +48,14 @@ export function applyFiltersService(imageId, imageData) {
       applyVibranceService(imageData.rgbaValues, Number(filter.value));
     } else if (filter.filterName === "greyscale") {
       applyGreyscaleService(imageData.rgbaValues);
-    } else if (filter.filterName === "rotate") {
-      applyRotationService(imageData, Number(filter.value));
     } else if (filter.filterName === "blur") {
       blurService(imageData, Number(filter.value));
     } else if (filter.filterName === "sharpen") {
       sharpeningService(imageData, Number(filter.value));
+    } else if (filter.filterName === "crop") {
+      croppingService(imageData, filter.value);
+    } else if (filter.filterName === "rotate") {
+      applyRotationService(imageData, Number(filter.value));
     }
-    // Other filter will be add
   });
 }
