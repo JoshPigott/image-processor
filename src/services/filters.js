@@ -1,90 +1,90 @@
 // Makes sure pixel value within 0 and 255
-function clapPixel(pixel) {
-  if (pixel < 0) return 0;
-  else if (pixel > 255) return 255;
-  else return Math.round(pixel);
+function clapRgbaValue(rgbaValue) {
+  if (rgbaValue < 0) return 0;
+  else if (rgbaValue > 255) return 255;
+  else return Math.round(rgbaValue);
 }
 
 // Updates opacity value
-export function applyOpacityService(pixels, opacityValue) {
+export function applyOpacityService(rgbaValues, opacityValue) {
   const opacityMultiplier = opacityValue / 100;
-  for (let i = 3; i < pixels.length; i += 4) {
-    pixels[i] = Math.round(pixels[i] * opacityMultiplier);
+  for (let i = 3; i < rgbaValues.length; i += 4) {
+    rgbaValues[i] = Math.round(rgbaValues[i] * opacityMultiplier);
   }
 }
 
-// Adds or decrease pixel rgb values to chagne brightness
-export function applyBrightnessService(pixels, brightnessValue) {
+// Adds or decrease rgb values to chagne brightness
+export function applyBrightnessService(rgbaValues, brightnessValue) {
   // Skips over opacity
-  for (let i = 0; i < pixels.length; i += 4) {
+  for (let i = 0; i < rgbaValues.length; i += 4) {
     for (let j = 0; j < 3; j++) {
-      pixels[i + j] = clapPixel(pixels[i + j] + brightnessValue);
+      rgbaValues[i + j] = clapRgbaValue(rgbaValues[i + j] + brightnessValue);
     }
   }
 }
 
 // Changes brightness by increase or decreasing distance from midpoint (128)
-export function applyContrastService(pixels, contrastMultiplierValue) {
+export function applyContrastService(rgbaValues, contrastMultiplierValue) {
   const midpoint = 128;
   // Skips over opacity
-  for (let i = 0; i < pixels.length; i += 4) {
+  for (let i = 0; i < rgbaValues.length; i += 4) {
     for (let j = 0; j < 3; j++) {
-      const distanceFromMidpoint = pixels[i + j] - midpoint;
+      const distanceFromMidpoint = rgbaValues[i + j] - midpoint;
       const newDistance = distanceFromMidpoint * contrastMultiplierValue;
-      pixels[i + j] = clapPixel(118 + newDistance);
+      rgbaValues[i + j] = clapRgbaValue(118 + newDistance);
     }
   }
 }
 
 // Turn each pixel specific amount of greyness
-export function applyGreyscaleService(pixels) {
-  for (let i = 0; i + 2 < pixels.length; i += 4) {
-    const red = pixels[i];
-    const green = pixels[i + 1];
-    const blue = pixels[i + 2];
+export function applyGreyscaleService(rgbaValues) {
+  for (let i = 0; i + 2 < rgbaValues.length; i += 4) {
+    const red = rgbaValues[i];
+    const green = rgbaValues[i + 1];
+    const blue = rgbaValues[i + 2];
 
     const greyscale = Math.round(0.299 * red + 0.587 * green + 0.114 * blue);
 
-    pixels[i] = greyscale;
-    pixels[i + 1] = greyscale;
-    pixels[i + 2] = greyscale;
+    rgbaValues[i] = greyscale;
+    rgbaValues[i + 1] = greyscale;
+    rgbaValues[i + 2] = greyscale;
   }
 }
 
 // Change distance from grey average with a constant multiplier
-export function applySaturationService(pixels, satrationMultiplierValue) {
-  for (let i = 0; i + 2 < pixels.length; i += 4) {
-    const red = pixels[i];
-    const green = pixels[i + 1];
-    const blue = pixels[i + 2];
+export function applySaturationService(rgbaValues, satrationMultiplierValue) {
+  for (let i = 0; i + 2 < rgbaValues.length; i += 4) {
+    const red = rgbaValues[i];
+    const green = rgbaValues[i + 1];
+    const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
 
     // Increases distance from the grey average
     for (let j = 0; j < 3; j++) {
-      const distanceFromGreyAverage = pixels[i + j] - greyAverage;
+      const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
       const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
-      pixels[i + j] = clapPixel(greyAverage + newDistance);
+      rgbaValues[i + j] = clapRgbaValue(greyAverage + newDistance);
     }
   }
 }
 
 // Change distance from grey average depending upon how far it is away from grey average
-export function applyVibranceService(pixels, vibranceValue) {
-  for (let i = 0; i + 2 < pixels.length; i += 4) {
-    const red = pixels[i];
-    const green = pixels[i + 1];
-    const blue = pixels[i + 2];
+export function applyVibranceService(rgbaValues, vibranceValue) {
+  for (let i = 0; i + 2 < rgbaValues.length; i += 4) {
+    const red = rgbaValues[i];
+    const green = rgbaValues[i + 1];
+    const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
 
     // Increases distance from the grey average
     for (let j = 0; j < 3; j++) {
-      const distanceFromGreyAverage = pixels[i + j] - greyAverage;
+      const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
       const vibranceMultiplier = 1 +
         vibranceValue * (1 - (distanceFromGreyAverage / 255));
       const newDistance = distanceFromGreyAverage * vibranceMultiplier;
-      pixels[i + j] = clapPixel(greyAverage + newDistance);
+      rgbaValues[i + j] = clapRgbaValue(greyAverage + newDistance);
     }
   }
 }
@@ -95,9 +95,9 @@ function rotateBy90(imageData, rotationValue) {
   // Height and width swap
   const newWidth = imageData.height;
   const newHeight = imageData.width;
-  const rgbaNewArray = new Uint8ClampedArray(newWidth * newHeight * 4);
+  const rgbaNewArray = [];
 
-  for (let i = 0; i < imageData.pixels.length / 4; i++) {
+  for (let i = 0; i < imageData.rgbaValues.length / 4; i++) {
     let newX;
     let newY;
     const x = i % imageData.width;
@@ -116,36 +116,178 @@ function rotateBy90(imageData, rotationValue) {
     for (let j = 0; j < 4; j++) {
       const rgbaIndex = i * 4 + j;
       const rgbaNewIndex = newIndex * 4 + j;
-      rgbaNewArray[rgbaNewIndex] = imageData.pixels[rgbaIndex];
+      rgbaNewArray[rgbaNewIndex] = imageData.rgbaValues[rgbaIndex];
     }
   }
   // Updates image data
-  imageData.pixels = rgbaNewArray;
+  imageData.rgbaValues = rgbaNewArray;
   imageData.width = newWidth;
   imageData.height = newHeight;
 }
 
 // Swaps inplace first and last pixels and so on
-function rotate180(pixels) {
-  for (let i = 0; i < pixels.length / 2; i++) {
+function rotate180(rgbaValues) {
+  for (let i = 0; i < rgbaValues.length / 2; i++) {
     // Keeps pixel order in RGBA (not ABGR)
-    const pixelType = i % 4;
-    const endIndex = pixels.length - 4;
-    const offset = pixelType * 2;
+    const rgbaType = i % 4;
+    const endIndex = rgbaValues.length - 4;
+    const offset = rgbaType * 2;
     const oppositeIndex = endIndex - i + offset;
 
-    const tempPixel = pixels[i];
-    pixels[i] = pixels[oppositeIndex];
-    pixels[oppositeIndex] = tempPixel;
+    const tempPixel = rgbaValues[i];
+    rgbaValues[i] = rgbaValues[oppositeIndex];
+    rgbaValues[oppositeIndex] = tempPixel;
   }
 }
 
 // Calls the right rotation algorithm
 export function applyRotationService(imageData, rotationValue) {
-  //const pixelsArray2d = getArray2d(pixels, width, height);
   if (rotationValue == 180) {
-    rotate180(imageData.pixels);
+    rotate180(imageData.rgbaValues);
   } else if (rotationValue == 90 || rotationValue == 270) {
     rotateBy90(imageData, rotationValue);
   }
+}
+
+// Calculates if pixel is an edge or not
+function isEdge(i, imageData) {
+  // Top egde
+  if (i < imageData.width) return true;
+  // Left edge
+  else if (i % imageData.width === 0) return true;
+  // Right edge
+  else if (i % imageData.width === imageData.width - 1) return true;
+  // Bottom edge
+  else if (i >= (imageData.rgbaValues.length / 4) - imageData.width) {
+    return true;
+  } else return false;
+}
+
+function applySharpening(
+  i,
+  j,
+  rgbaNewArray,
+  imageData,
+  directNeighboursSum,
+  multiplier,
+) {
+  const rgbaValue = imageData.rgbaValues[i * 4 + j];
+  const neighborWeight = (multiplier - 1) / 4;
+  const newValue = multiplier * rgbaValue -
+    neighborWeight * directNeighboursSum;
+  rgbaNewArray[i * 4 + j] = clapRgbaValue(Math.round(newValue));
+}
+
+function applyBlur(
+  i,
+  j,
+  rgbaNewArray,
+  imageData,
+  directNeighboursSum,
+  diagonalNeighboursSum,
+  multiplier,
+) {
+  const rgbaValue = imageData.rgbaValues[i * 4 + j];
+  // const neighborWeight = (multiplier - 1) / 4;
+  const newValue = (1 - multiplier) * rgbaValue +
+    (multiplier * 0.125) * directNeighboursSum +
+    (multiplier * 0.0625) * diagonalNeighboursSum;
+  rgbaNewArray[i * 4 + j] = clapRgbaValue(Math.round(newValue));
+}
+
+// Updates pixels rbg values
+function applyEffectToPixel(
+  i,
+  imageData,
+  effect,
+  multiplier,
+  rgbaNewArray,
+  directNeighbours,
+  diagonalNeighbours,
+  _multiplier,
+) {
+  // Loop over each rgba value
+  for (let j = 0; j < 4; j++) {
+    // Keeps alpha value unchanged
+    if (j === 3) {
+      rgbaNewArray[i * 4 + j] = imageData.rgbaValues[i * 4 + j];
+      continue;
+    }
+
+    let directNeighboursSum = 0;
+    directNeighbours.forEach((index) => {
+      directNeighboursSum += imageData.rgbaValues[index * 4 + j];
+    });
+
+    let diagonalNeighboursSum = 0;
+    diagonalNeighbours.forEach((index) => {
+      diagonalNeighboursSum += imageData.rgbaValues[index * 4 + j];
+    });
+
+    if (effect === "sharpen") {
+      applySharpening(
+        i,
+        j,
+        rgbaNewArray,
+        imageData,
+        directNeighboursSum,
+        multiplier,
+      );
+    } else if (effect === "blur") {
+      applyBlur(
+        i,
+        j,
+        rgbaNewArray,
+        imageData,
+        directNeighboursSum,
+        diagonalNeighboursSum,
+        multiplier,
+      );
+    }
+  }
+}
+
+// Increase rbg values between neighbours and decreases them for blur
+function applyKernelEffect(imageData, effect, multiplier) {
+  const rgbaNewArray = [];
+  // Loops over each pixel finding neighbours
+  for (let i = 0; i < imageData.rgbaValues.length / 4; i++) {
+    if (isEdge(i, imageData)) {
+      for (let j = 0; j < 4; j++) {
+        rgbaNewArray[i * 4 + j] = imageData.rgbaValues[i * 4 + j];
+      }
+      continue;
+    }
+
+    const directNeighbours = [
+      i - imageData.width,
+      i + imageData.width,
+      i + 1,
+      i - 1,
+    ];
+    const diagonalNeighbours = [
+      i - imageData.width + 1,
+      i - imageData.width - 1,
+      i + imageData.width + 1,
+      i + imageData.width - 1,
+    ];
+    applyEffectToPixel(
+      i,
+      imageData,
+      effect,
+      multiplier,
+      rgbaNewArray,
+      directNeighbours,
+      diagonalNeighbours,
+    );
+  }
+  imageData.rgbaValues = rgbaNewArray;
+}
+
+export function sharpeningService(imageData, multiplier) {
+  applyKernelEffect(imageData, "sharpen", multiplier);
+}
+
+export function blurService(imageData, multiplier) {
+  applyKernelEffect(imageData, "blur", multiplier);
 }

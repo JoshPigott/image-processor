@@ -19,11 +19,16 @@
 - Sessions to of muplite users
 - Filter tracking
 
-- Filters
+- **Filters**
 - Editing opacity
 - Editing brigtness
 - Editing contrast
-- greyscale
+- Editing saturation
+- Editing vibrance
+- Greyscale
+- Rotation 90, 180, 270 degrees
+- Increasing image sharpness
+- Increasing image blur
 
 ## File structure
 
@@ -71,6 +76,7 @@
     │
     ├── services
     │   ├── apply-filters.js
+    │   ├── filters-validate.js
     │   ├── filters.js
     │   ├── get-image-data.js
     │   ├── make-canvas.js
@@ -91,7 +97,7 @@ Filters of in the database link to the session. Filters row are per image.
 - **opacity**
   - Multiplies Alpha value by number from 0 to 1 to decrease transparency
   - Effect: Makes the image more see-through or solid
-- **brigtness**
+- **brightness**
   - Adds or subtracts up to 50 to each RGB value increasing or decreasing pixel
     brigtness
   - Effect: Makes image look more bright or more dull
@@ -131,6 +137,16 @@ Filters of in the database link to the session. Filters row are per image.
   - Screen coordinates reverse rotation direction so x and x formula are adjust
     to this
   - Effect: image rotated 90 or 270 degrees
+- **image sharpness**
+  - Looks at neighbouring pixels
+  - Calculate new RGB values from pixels and neighbouring pixels rgb values
+  - It increase the in RGB values from neighbouring pixels
+  - Effect: increase edge definition
+- **image blur**
+  - Looks at neighbouring pixels
+  - Uses this formula
+  - `(1 - multiplier) * rgbaValue + (multiplier * 0.125) * directNeighboursSum + (multiplier * 0.0625) * diagonalNeighboursSum`
+  - Effect: Removes fine details and softens edges
 
 ## Problems issues know constraints
 

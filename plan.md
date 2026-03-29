@@ -14,6 +14,6 @@
 ### Features I want to build at some point
 
 - Harder ones
-- Image rotating
+- Image enlarging and shrinking
 - Image cropping
 - Clarity / Sharpening

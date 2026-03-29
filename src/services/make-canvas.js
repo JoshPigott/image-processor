@@ -14,8 +14,8 @@ export async function printImageOnCanvas(imageId) {
   const output = canvasCtx.createImageData(imageData.width, imageData.height);
 
   // Places each pixel into the canvas data
-  for (let i = 0; i < imageData.pixels.length; i += 1) {
-    output.data[i] = imageData.pixels[i];
+  for (let i = 0; i < imageData.rgbaValues.length; i += 1) {
+    output.data[i] = imageData.rgbaValues[i];
   }
 
   canvasCtx.putImageData(output, 0, 0);

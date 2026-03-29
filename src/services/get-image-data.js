@@ -80,7 +80,7 @@ function getSize(bytes) {
 
 // Adds opicity into the pixel data
 function rgbToRgba(rgbPixels) {
-  const rgbaPixels = new Uint8ClampedArray(rgbPixels.length / 3 * 4);
+  const rgbaPixels = [];
   for (let i = 2, j = 3; i < rgbPixels.length; i += 3, j += 4) {
     rgbaPixels[j - 3] = rgbPixels[i - 2]; // Red
     rgbaPixels[j - 2] = rgbPixels[i - 1]; // Green
@@ -99,8 +99,8 @@ export async function getImageData(imagePath) {
   const height = header.height;
 
   const pixelStartIndex = getPixelStart(bytes, header.index);
-  let pixels = bytes.slice(pixelStartIndex);
-  pixels = rgbToRgba(pixels);
+  let rgbaValues = bytes.slice(pixelStartIndex);
+  rgbaValues = rgbToRgba(rgbaValues);
 
-  return { pixels, width, height };
+  return { rgbaValues, width, height };
 }
