@@ -1,13 +1,13 @@
 import db from "./connection.js";
 
-export function dbAddImage(
+export function dbAddImage({
   sessionId,
   imageId,
   imageName,
   imagePath,
   width,
   height,
-) {
+}) {
   db.prepare(
     `INSERT INTO images (sessionId, imageId, imageName, imagePath, width, height)
      VALUES(?,?,?,?,?,?)`,
