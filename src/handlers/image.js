@@ -5,14 +5,10 @@ import {
   dbRemoveFilter,
   dbUpdateFilter,
 } from "../database/filters.js";
-import {
-  dbAddImage,
-  dbGetImage,
-  dbGetImageDimensions,
-} from "../database/image.js";
+import { dbGetImageDimensions } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
-import { getImageSizeService } from "../services/get-image-data.js";
-import { isValidFilterService } from "../services/filters-validate.js";
+import { isValidFilterService } from "../services/filters-validation.js";
+import { addImageService } from "../services/image.js";
 import { json } from "../utils/json.js";
 
 export async function printImage(ctx) {
@@ -24,26 +20,13 @@ export async function printImage(ctx) {
 
 // Adds and keeps of the filters being applied to image
 export async function addImage(ctx) {
-  const sessionId = getSessionIdService(ctx.req);
   const formData = await ctx.req.formData();
-  const imageName = formData.get("imageName");
-  const imageId = crypto.randomUUID();
+  const image = formData.get("image");
 
-  // Later on in here I will need to valid the image
-  // Later this come with the file image file
-
-  const imagePath = `./src/public/assets/${imageName}.ppm`;
-  const dimensions = await getImageSizeService(imagePath);
-
-  dbAddImage(
-    sessionId,
-    imageId,
-    imageName,
-    imagePath,
-    dimensions.width,
-    dimensions.height,
-  );
-  console.log("image id:", imageId);
+  const upload = await addImageService(ctx.req, image);
+  if (!upload) {
+    return json({ "error": "Invalid image" }, { status: 201 });
+  }
   return json({ "sucess": "Image has been added" }, { status: 201 });
 }
 

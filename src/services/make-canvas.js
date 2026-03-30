@@ -20,5 +20,5 @@ export async function printImageOnCanvas(imageId) {
   canvasCtx.putImageData(output, 0, 0);
 
   const bytes = canvas.toBuffer();
-  await Deno.writeFile(`src/public/assets/${imageInfo.imageName}.png`, bytes);
+  await Deno.writeFile(`data/images/output/${imageId}.png`, bytes);
 }
