@@ -126,7 +126,7 @@ function filterPaeth({
   const rowAbove = getRowAbove(index, pixelsPerRow, bytesPerPixel, imageData);
   const newRow = new Uint8Array(row.length - 1);
 
-  // Left most pixel values (average only with above value)
+  // Left most pixel values (averages only with above value)
   for (let j = 0; j < bytesPerPixel; j++) {
     const valueAbove = rowAbove[j];
     const value = row[j + 1] + valueAbove;

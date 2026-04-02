@@ -186,3 +186,4 @@ Filters of in the database link to the session. Filters row are per image.
 
 - you can only add one filter at a time per request.
 - That image may can not be served yet
+- The services should split into wasy more helper functions

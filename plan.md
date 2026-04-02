@@ -15,7 +15,18 @@
 
 - Image enlarging and shrinking
 
-## Plan for how i am going to decode from png to pixels
+## Commit I still need to do are:
 
-- Next go over it and refactor the png decoder
-- And make more helper functions
+- The current refactor of png decoder
+- Being able to download the image
+- being able to server output image if you the right session 👍
+- making session like on the front end 👍
+- Then just the whole frontend
+
+## Plan for the reafactor
+
+- Move more code into helper funcation
+- Make the png decoder function into more functions
+- Repeat less of the filters
+
+uitlis: bytes, row and pixel
