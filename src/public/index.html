@@ -3,11 +3,20 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Image Processor</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
   </head>
   <body>
-    <div>Hi</div>
-    <img src="/assets/dog.png" alt="A yellow image">
+    <!--Getting the images will been htmx later on-->
+    <img
+      src="/input/c66c3f1c-6d6c-48df-8aa5-97bca34fb3a8.png"
+      alt="A car image"
+    >
+    <img
+      src="/output/c66c3f1c-6d6c-48df-8aa5-97bca34fb3a8.png"
+      alt="A car image with image filters applied"
+    >
+    <script src="scripts/setup-session.js" type="module"></script>
   </body>
 </html>

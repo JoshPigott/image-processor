@@ -2,7 +2,7 @@
 import { dbSetUpDatabase } from "./database/schema.js";
 import { expiredSession } from "./services/sessions.js";
 import { compiled } from "./routes/index.js";
-import { serveStaticFile } from "./middleware/serveStaticFiles.js";
+import { serveStatic } from "./middleware/serveStatic.js";
 import { json } from "./utils/json.js";
 
 dbSetUpDatabase();
@@ -15,9 +15,8 @@ async function server(req) {
   const pathname = url.pathname;
   const method = req.method;
 
-  const staticFile = await serveStaticFile(req, pathname);
-  // Return if there a static file
-  if (staticFile !== undefined) return staticFile;
+  const staticAsset = await serveStatic(req, pathname);
+  if (staticAsset !== undefined) return staticAsset;
 
   // Loops over routes to trying find one that matches the request
   for (const r of compiled) {
@@ -44,4 +43,4 @@ async function safeServer(req) {
   }
 }
 
-Deno.serve({ port: 8000 }, safeServer);
+Deno.serve({ port: 8000 }, server);
