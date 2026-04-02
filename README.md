@@ -42,8 +42,17 @@
 │   └── settings.json
 │
 ├── data
-│   ├── .gitkeep
-│   └── database
+│   ├── database
+│   │
+│   └── images
+│       ├── car.png
+│       ├── dog.png
+│       │
+│       ├── input
+│       │   └── .gitkeep
+│       │
+│       └── output
+│           └── .gitkeep
 │
 └── src
     ├── server.js
@@ -67,26 +76,46 @@
     │   ├── style.css
     │   │
     │   └── assets
-    │       ├── dog.png
-    │       ├── dog.ppm
-    │       └── yellow.ppm
+    │       └── .gitkeep
     │
     ├── routes
     │   └── index.js
     │
     ├── services
     │   ├── apply-filters.js
-    │   ├── filters-validate.js
+    │   ├── filters-validation.js
     │   ├── filters.js
-    │   ├── get-image-data.js
+    │   ├── image.js
     │   ├── make-canvas.js
+    │   ├── png-decoder-filters.js
+    │   ├── png-decoder.js
     │   └── sessions.js
     │
     └── utils
-        └── json.js
+        ├── json.js
+        ├── merge-two-uint8-arrays.js
+        ├── pixels.js
+        └── png-rows.js
 ```
 
 ## Key logic flow
+
+- **How the png decoder works**
+  - Split bytes into PNG chunks: length, type, data, CRC
+  - Parse data differently depending upon chuck type
+  - Concatenate pixel chunks; build compressed image stream
+  - Deflate decompress `pipeThrough(ds)`; return unfiltered image bytes +
+    metadata
+
+- **How the filters work**
+  - Apply filters to decompressed, unfiltered scanlines
+  - Read filter type byte at start of each row `filterType = row[0]`
+  - None: row unchanged
+  - Sub: add left pixel
+  - Up: add above pixel
+  - Average: adds mean of left and above
+  - Paeth: adds closest of (left, above, leftAbove) to the predictor
+    `valueLeft + valueAbove - valueLeftAbove`
 
 - Coming soon
 

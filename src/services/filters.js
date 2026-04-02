@@ -1,9 +1,4 @@
-// Makes sure pixel value within 0 and 255
-function clapRgbaValue(rgbaValue) {
-  if (rgbaValue < 0) return 0;
-  else if (rgbaValue > 255) return 255;
-  else return Math.round(rgbaValue);
-}
+import { clapPixelValue } from "../utils/pixels.js";
 
 // Updates opacity value
 export function applyOpacityService(rgbaValues, opacityValue) {
@@ -18,7 +13,7 @@ export function applyBrightnessService(rgbaValues, brightnessValue) {
   // Skips over opacity
   for (let i = 0; i < rgbaValues.length; i += 4) {
     for (let j = 0; j < 3; j++) {
-      rgbaValues[i + j] = clapRgbaValue(rgbaValues[i + j] + brightnessValue);
+      rgbaValues[i + j] = clapPixelValue(rgbaValues[i + j] + brightnessValue);
     }
   }
 }
@@ -31,7 +26,7 @@ export function applyContrastService(rgbaValues, contrastMultiplierValue) {
     for (let j = 0; j < 3; j++) {
       const distanceFromMidpoint = rgbaValues[i + j] - midpoint;
       const newDistance = distanceFromMidpoint * contrastMultiplierValue;
-      rgbaValues[i + j] = clapRgbaValue(118 + newDistance);
+      rgbaValues[i + j] = clapPixelValue(118 + newDistance);
     }
   }
 }
@@ -64,7 +59,7 @@ export function applySaturationService(rgbaValues, satrationMultiplierValue) {
     for (let j = 0; j < 3; j++) {
       const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
       const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
-      rgbaValues[i + j] = clapRgbaValue(greyAverage + newDistance);
+      rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
     }
   }
 }
@@ -84,7 +79,7 @@ export function applyVibranceService(rgbaValues, vibranceValue) {
       const vibranceMultiplier = 1 +
         vibranceValue * (1 - (distanceFromGreyAverage / 255));
       const newDistance = distanceFromGreyAverage * vibranceMultiplier;
-      rgbaValues[i + j] = clapRgbaValue(greyAverage + newDistance);
+      rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
     }
   }
 }
@@ -175,7 +170,7 @@ function applySharpening(
   const neighborWeight = (multiplier - 1) / 4;
   const newValue = multiplier * rgbaValue -
     neighborWeight * directNeighboursSum;
-  rgbaNewArray[i * 4 + j] = clapRgbaValue(Math.round(newValue));
+  rgbaNewArray[i * 4 + j] = clapPixelValue(Math.round(newValue));
 }
 
 function applyBlur(
@@ -192,7 +187,7 @@ function applyBlur(
   const newValue = (1 - multiplier) * rgbaValue +
     (multiplier * 0.125) * directNeighboursSum +
     (multiplier * 0.0625) * diagonalNeighboursSum;
-  rgbaNewArray[i * 4 + j] = clapRgbaValue(Math.round(newValue));
+  rgbaNewArray[i * 4 + j] = clapPixelValue(Math.round(newValue));
 }
 
 // Updates pixels rbg values

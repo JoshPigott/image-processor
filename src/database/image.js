@@ -4,14 +4,13 @@ export function dbAddImage({
   sessionId,
   imageId,
   imageName,
-  imagePath,
   width,
   height,
 }) {
   db.prepare(
-    `INSERT INTO images (sessionId, imageId, imageName, imagePath, width, height)
-     VALUES(?,?,?,?,?,?)`,
-  ).run(sessionId, imageId, imageName, imagePath, width, height);
+    `INSERT INTO images (sessionId, imageId, imageName, width, height)
+     VALUES(?,?,?,?,?)`,
+  ).run(sessionId, imageId, imageName, width, height);
 }
 
 // When user deletes image

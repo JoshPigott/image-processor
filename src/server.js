@@ -7,7 +7,7 @@ import { json } from "./utils/json.js";
 
 dbSetUpDatabase();
 // Makes sure all session expire at the right time
-expiredSession();
+await expiredSession();
 
 // Links request to handlers and servers static files
 async function server(req) {

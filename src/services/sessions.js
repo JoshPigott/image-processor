@@ -7,8 +7,14 @@ import {
 import { dbDeleteAllFilters } from "../database/filters.js";
 import { dbDeleteUsersImages } from "../database/image.js";
 
-// Removes users data from database
-function cleanUp(sessionId) {
+// Removes users data from database and remove users images
+async function cleanUp(sessionId) {
+  try {
+    await Deno.remove(`data/images/input/${sessionId}.png`);
+    await Deno.remove(`data/images/output/${sessionId}.png`);
+  } catch (_err) {
+    // File images were deleted or not made
+  }
   dbDeleteAllFilters(sessionId);
   dbDeleteUsersImages(sessionId);
   dbDeleteSession(sessionId);
@@ -23,8 +29,8 @@ export function createSessionService() {
   const sessionId = crypto.randomUUID();
 
   // Deletes session when it expiries
-  setTimeout(() => {
-    cleanUp(sessionId);
+  setTimeout(async () => {
+    await cleanUp(sessionId);
   }, sixHours);
 
   // ExpiryTime is a string to safely store large numbers without overflow
@@ -33,7 +39,7 @@ export function createSessionService() {
 }
 
 // Runs when server start up to sure only valid sessions
-export function expiredSession() {
+export async function expiredSession() {
   const timeNow = Date.now();
   let sessions = dbGetAllSession();
   // Converts expiryTime back to a number
@@ -42,17 +48,17 @@ export function expiredSession() {
     expiryTime: session.expiryTime,
   }));
 
-  sessions.forEach((session) => {
+  for (const session of sessions) {
     if (session.expiryTime <= timeNow) {
-      cleanUp(session.sessionId);
+      await cleanUp(session.sessionId);
     } else {
       // Deletes session when it expiries
       const timeTillExpiry = session.expiryTime - timeNow;
-      setTimeout(() => {
-        cleanUp(session.sessionId);
+      setTimeout(async () => {
+        await cleanUp(session.sessionId);
       }, timeTillExpiry);
     }
-  });
+  }
 }
 
 // Get cookie from request and cookies has an object
