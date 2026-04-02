@@ -1,11 +1,9 @@
 import { createCanvas } from "@josefabio/deno-canvas";
 import { applyFiltersService } from "./apply-filters.js";
-import { getImageDataService } from "./get-image-data.js";
-import { dbGetImage } from "../database/image.js";
+import { readPngService } from "./png-decoder.js";
 
 export async function printImageOnCanvas(imageId) {
-  const imageInfo = dbGetImage(imageId);
-  const imageData = await getImageDataService(imageInfo.imagePath);
+  const imageData = await readPngService(imageId);
 
   applyFiltersService(imageId, imageData);
   const canvas = createCanvas(imageData.width, imageData.height);

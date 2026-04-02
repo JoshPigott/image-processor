@@ -1,11 +1,16 @@
 import { dbAddImage } from "../database/image.js";
-import { getImageSizeService } from "./get-image-data.js";
+import { getImageMetadataService } from "./png-decoder.js";
 import { getSessionIdService } from "./sessions.js";
 
 // Write image file to data (later on this may just be writing the pixel data)
 async function addImageFile(image, imageId) {
   const bytes = new Uint8Array(await image.arrayBuffer());
   await Deno.writeFile(`data/images/input/${imageId}.png`, bytes);
+}
+
+// Remove the file
+async function removeImageFile(imageId) {
+  await Deno.remove(`data/images/input/${imageId}.png`);
 }
 
 // Get first bytes for if it is a png
@@ -57,18 +62,21 @@ export async function addImageService(req, image) {
   const sessionId = getSessionIdService(req);
   const imageId = crypto.randomUUID();
   const imageName = sanitizeFileName(image.name);
-  const imagePath = `./src/public/assets/${imageName}.ppm`; // This will in the log term once i can decode png to pixels
 
   await addImageFile(image, imageId);
-  const dimensions = await getImageSizeService(imagePath);
+  const imageMetadata = await getImageMetadataService(imageId);
 
+  // If png type not supported
+  if (imageMetadata.pngType !== "rgb" && imageMetadata.pngType !== "rgba") {
+    await removeImageFile(imageId);
+    return false;
+  }
   dbAddImage({
     sessionId,
     imageId,
     imageName,
-    imagePath,
-    width: dimensions.width,
-    height: dimensions.height,
+    width: imageMetadata.width,
+    height: imageMetadata.height,
   });
   console.log("image id:", imageId);
   return true;

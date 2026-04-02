@@ -13,7 +13,9 @@
 
 ### Features I want to build at some point
 
-- Harder ones
 - Image enlarging and shrinking
-- Image cropping
-- Clarity / Sharpening
+
+## Plan for how i am going to decode from png to pixels
+
+- Next go over it and refactor the png decoder
+- And make more helper functions
