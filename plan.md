@@ -19,9 +19,10 @@
 
 - The current refactor of png decoder
 - Being able to download the image
-- being able to server output image if you the right session 👍
-- making session like on the front end 👍
+
 - Then just the whole frontend
+- Add basic html 👍
+- I think maybe add htmx next
 
 ## Plan for the reafactor
 
