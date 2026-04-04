@@ -1,9 +1,10 @@
-import { 
+import {
   dbAddFilter,
-  dbIsFilter,
   dbGetFilters,
+  dbIsFilter,
   dbRemoveFilter,
-  dbUpdateFilter } from "../database/filters.js";
+  dbUpdateFilter,
+} from "../database/filters.js";
 import {
   applyBrightnessService,
   applyContrastService,
@@ -66,7 +67,7 @@ export function applyFiltersService(imageId, imageData) {
   });
 }
 
- // Updates filter value in db and return response
+// Updates filter value in db and return response
 export async function chagneFilterService(
   isFilterValid,
   sessionId,
@@ -89,7 +90,7 @@ export async function chagneFilterService(
 }
 
 // Gets current filters values for when stite reloads
-export function filterValuesService(imageId){
+export function filterValuesService(imageId) {
   // Default values
   const filterValues = {
     "opacity": 100,
@@ -101,10 +102,12 @@ export function filterValuesService(imageId){
     "rotate": 0,
     "sharpen": 0,
     "blur": 0,
-    "crop": [0, 0, 0, 0]
-  }
+    "crop": [0, 0, 0, 0],
+  };
   // For each filter up the value
   const filters = dbGetFilters(imageId);
-  filters.forEach((filter) => {filterValues[filter.filterName] = filter.value});
+  filters.forEach((filter) => {
+    filterValues[filter.filterName] = filter.value;
+  });
   return filterValues;
 }

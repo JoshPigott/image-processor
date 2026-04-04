@@ -2,7 +2,7 @@ import {
   createSessionService,
   getSessionService,
 } from "../services/sessions.js";
-import { json } from "../utils/json.js";
+import { json } from "../utils/responses.js";
 
 export function createSession(_ctx) {
   const sessionId = createSessionService();

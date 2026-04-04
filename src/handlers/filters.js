@@ -2,10 +2,9 @@ import { dbIsFilter, dbRemoveFilter } from "../database/filters.js";
 import { dbGetImageDimensions } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
 import { isValidFilterService } from "../services/filters-validation.js";
-import { imageOutputView } from "../views/image-output.js";
-import { htmlResponse } from "../utils/html-response.js";
-import { json } from "../utils/json.js";
 import { chagneFilterService } from "../services/apply-filters.js";
+import { imageOutputView } from "../views/image-output.js";
+import { htmlResponse, json } from "../utils/responses.js";
 
 // Adds filter to database unless valid
 export async function addFilter(ctx) {
@@ -32,7 +31,7 @@ export async function addFilter(ctx) {
     filterName,
     value,
   );
-  const html = imageOutputView(imageId)
+  const html = imageOutputView(imageId);
   return htmlResponse(html, { status: 201 });
 }
 

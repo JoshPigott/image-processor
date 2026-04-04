@@ -6,13 +6,22 @@
     <title>Image Processor</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"
+      integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <div class="image-editor" hx-get="get-image-editor" hx-trigger="load" hx-swap="innerHTML"></div>
-    
+    <div
+      class="image-editor"
+      hx-get="get-image-editor"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+    >
+    </div>
 
     <script src="scripts/setup-session.js" type="module"></script>
-    <script src="scripts/silders-values.js" type="module"></script> 
+    <script src="scripts/editor-init.js" type="module"></script>
   </body>
 </html>
