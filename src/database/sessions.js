@@ -21,3 +21,12 @@ export function dbGetAllSession() {
 export function dbDeleteSession(sessionId) {
   db.prepare(`DELETE FROM sessions WHERE sessionId=?`).run(sessionId);
 }
+
+export function dbUpdateLastImageId(sessionId, lastImageId){
+  db.prepare(`UPDATE sessions SET lastImageId=? WHERE sessionId=?`).run(lastImageId, sessionId);
+}
+
+export function dbGetLastImageId(sessionId) {
+  const res = db.prepare(`SELECT lastImageId FROM sessions WHERE sessionId=?`).get(sessionId);
+  return res.lastImageId;
+}

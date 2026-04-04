@@ -19,10 +19,10 @@
 
 - The current refactor of png decoder
 - Being able to download the image
-
+- reset image filters -invilad (just for silder) and then for all 
 - Then just the whole frontend
 - Add basic html 👍
-- I think maybe add htmx next
+- I think maybe add htmx next 👍
 
 ## Plan for the reafactor
 

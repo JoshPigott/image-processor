@@ -4,7 +4,8 @@ import db from "./connection.js";
 export function dbSetUpDatabase() {
   // ExpiryTime is a string to safely store large numbers without overflow
   db.prepare(
-    `CREATE TABLE IF NOT EXISTS sessions (sessionId TEXT NOT NULL PRIMARY KEY, expiryTime TEXT NOT NULL)`,
+    `CREATE TABLE IF NOT EXISTS sessions (sessionId TEXT NOT NULL PRIMARY KEY,
+    lastImageId TEXT DEFAULT NULL, expiryTime TEXT NOT NULL)`,
   ).run();
 
   // Images

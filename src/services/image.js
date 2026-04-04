@@ -1,6 +1,9 @@
+import { dbUpdateLastImageId } from "../database/sessions.js";
 import { dbAddImage } from "../database/image.js";
 import { getImageMetadataService } from "./png-decoder.js";
 import { getSessionIdService } from "./sessions.js";
+import { printImageOnCanvas } from "./make-canvas.js";
+
 
 // Write image file to data (later on this may just be writing the pixel data)
 async function addImageFile(image, imageId) {
@@ -39,6 +42,7 @@ function sanitizeFileName(fileName) {
     .replace(/\.+/g, ".");
 }
 
+// Checks if image is valid with file size, type and first bytes of image
 export async function isValidImage(image) {
   // maxSize ~5MB
   const maxSize = 5 * 1024 * 1024;
@@ -55,9 +59,10 @@ export async function isValidImage(image) {
   return true;
 }
 
+// Adds image if valid and type supported
 export async function addImageService(req, image) {
   if (await isValidImage(image) === false) {
-    return false;
+    return {successful: false};
   }
   const sessionId = getSessionIdService(req);
   const imageId = crypto.randomUUID();
@@ -69,8 +74,10 @@ export async function addImageService(req, image) {
   // If png type not supported
   if (imageMetadata.pngType !== "rgb" && imageMetadata.pngType !== "rgba") {
     await removeImageFile(imageId);
-    return false;
+    return {successful: false};
   }
+  printImageOnCanvas(imageId);
+  dbUpdateLastImageId(sessionId, imageId);
   dbAddImage({
     sessionId,
     imageId,
@@ -79,5 +86,6 @@ export async function addImageService(req, image) {
     height: imageMetadata.height,
   });
   console.log("image id:", imageId);
-  return true;
+  return {successful: true, imageId};
 }
+

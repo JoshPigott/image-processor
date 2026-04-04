@@ -142,6 +142,8 @@ export function isValidFilterService(filterName, value, imageDimensions) {
 
   // Filter does not exist
   if (!filterValueInfo) return { "valid": false };
+  // No filter value
+  else if (value === undefined || value === null) return { "valid": false };
 
   // Checks values
   return isValidFilterValueService(filterValueInfo, value, imageDimensions);

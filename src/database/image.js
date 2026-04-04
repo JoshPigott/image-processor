@@ -23,6 +23,10 @@ export function dbDeleteUsersImages(sessionId) {
   db.prepare(`DELETE FROM images WHERE sessionId=?`).run(sessionId);
 }
 
+export function dbGetAllUsersImages(sessionId) {
+  return db.prepare(`SELECT * FROM images WHERE sessionId=?`).all(sessionId);
+}
+
 export function dbGetImage(imageId) {
   return db.prepare(`SELECT * FROM images WHERE imageId=?`).get(imageId);
 }

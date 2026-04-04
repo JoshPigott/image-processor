@@ -5,15 +5,19 @@ import {
   dbGetSession,
 } from "../database/sessions.js";
 import { dbDeleteAllFilters } from "../database/filters.js";
-import { dbDeleteUsersImages } from "../database/image.js";
+import { dbDeleteUsersImages, dbGetAllUsersImages } from "../database/image.js";
 
 // Removes users data from database and remove users images
 async function cleanUp(sessionId) {
-  try {
-    await Deno.remove(`data/images/input/${sessionId}.png`);
-    await Deno.remove(`data/images/output/${sessionId}.png`);
-  } catch (_err) {
-    // File images were deleted or not made
+  const images = dbGetAllUsersImages(sessionId);
+  for (const image of images){
+    try {
+      await Deno.remove(`data/images/input/${image.imageId}.png`);
+      await Deno.remove(`data/images/output/${image.imageId}.png`);
+    }
+    catch (_err) {
+      // File images were deleted or not made
+    }
   }
   dbDeleteAllFilters(sessionId);
   dbDeleteUsersImages(sessionId);
@@ -23,7 +27,7 @@ async function cleanUp(sessionId) {
 
 // Create a session with a expiry time
 export function createSessionService() {
-  const sixHours = 1000 * 60 * 60 * 6;
+  const sixHours = 1000 * 60 * 60 * 6;  
   const timeNow = Date.now();
   const expiryTime = timeNow + sixHours;
   const sessionId = crypto.randomUUID();

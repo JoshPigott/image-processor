@@ -1,4 +1,9 @@
-import { dbGetFilters } from "../database/filters.js";
+import { 
+  dbAddFilter,
+  dbIsFilter,
+  dbGetFilters,
+  dbRemoveFilter,
+  dbUpdateFilter } from "../database/filters.js";
 import {
   applyBrightnessService,
   applyContrastService,
@@ -11,6 +16,7 @@ import {
   croppingService,
   sharpeningService,
 } from "../services/filters.js";
+import { printImageOnCanvas } from "./make-canvas.js";
 
 // Apply all the filters in the database in a specific order
 export function applyFiltersService(imageId, imageData) {
@@ -58,4 +64,47 @@ export function applyFiltersService(imageId, imageData) {
       applyRotationService(imageData, Number(filter.value));
     }
   });
+}
+
+ // Updates filter value in db and return response
+export async function chagneFilterService(
+  isFilterValid,
+  sessionId,
+  imageId,
+  filterName,
+  value,
+) {
+  const filterApplied = dbIsFilter(imageId, filterName);
+  // Defualt value so no need to track and apply filter
+  if (isFilterValid.default === true) {
+    dbRemoveFilter(imageId, filterName);
+  } // Filter is not being applied
+  else if (filterApplied === undefined) {
+    dbAddFilter(sessionId, imageId, filterName, value);
+  } // Filter is already being applied
+  else {
+    dbUpdateFilter(imageId, filterName, value);
+  }
+  await printImageOnCanvas(imageId);
+}
+
+// Gets current filters values for when stite reloads
+export function filterValuesService(imageId){
+  // Default values
+  const filterValues = {
+    "opacity": 100,
+    "brightness": 0,
+    "contrast": 1,
+    "greyscale": "false",
+    "saturation": 1,
+    "vibrance": 1,
+    "rotate": 0,
+    "sharpen": 0,
+    "blur": 0,
+    "crop": [0, 0, 0, 0]
+  }
+  // For each filter up the value
+  const filters = dbGetFilters(imageId);
+  filters.forEach((filter) => {filterValues[filter.filterName] = filter.value});
+  return filterValues;
 }
