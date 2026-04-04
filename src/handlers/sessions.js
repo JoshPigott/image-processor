@@ -6,7 +6,7 @@ import { json } from "../utils/json.js";
 
 export function createSession(_ctx) {
   const sessionId = createSessionService();
-  console.log("New sesion created:", sessionId);
+  console.log("New session created:", sessionId);
   return new Response(null, {
     status: 204,
     headers: {

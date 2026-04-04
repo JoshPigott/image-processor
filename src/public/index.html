@@ -6,127 +6,13 @@
     <title>Image Processor</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script>
   </head>
   <body>
-    <div class="opacity">
-      <input
-        type="range"
-        id="opacity__input"
-        name="opacity"
-        class="opacity__input"
-        min="0"
-        max="100"
-        value="100"
-        step="1"
-      >
-      <label class="opacity__label" for="opacity__input">Opacity</label>
-    </div>
-    <div class="brightness">
-      <input
-        type="range"
-        id="brightness__input"
-        name="brightness"
-        class="brightness__input"
-        min="-50"
-        max="50"
-        value="0"
-        step="1"
-      >
-      <label class="brightness__label" for="brightness__input"
-      >Brightness</label>
-    </div>
-    <div class="contrast">
-      <input
-        type="range"
-        id="contrast__input"
-        name="contrast"
-        class="contrast__input"
-        min="0.5"
-        max="1.5"
-        value="1"
-        step="0.01"
-      >
-      <label class="contrast__label" for="contrast__input">Contrast </label>
-    </div>
-    <div class="saturation">
-      <input
-        type="range"
-        id="saturation__input"
-        name="saturation"
-        class="saturation__input"
-        min="0.5"
-        max="2.0"
-        value="1"
-        step="0.02"
-      >
-      <label class="saturation__label" for="saturation__input">Saturation
-      </label>
-    </div>
-    <div class="vibrance">
-      <input
-        type="range"
-        id="vibrance__input"
-        name="vibrance"
-        class="vibrance__input"
-        min="0"
-        max="2.0"
-        value="1"
-        step="0.02"
-      >
-      <label class="vibrance__label" for="vibrance__input">Vibrance </label>
-    </div>
-    <div class="sharpen">
-      <input
-        type="range"
-        id="sharpen__input"
-        name="sharpen"
-        class="sharpen__input"
-        min="0"
-        max="10"
-        value="0"
-        step="0.1"
-      >
-      <label class="sharpen__label" for="sharpen__input">Sharpen</label>
-    </div>
-    <div class="blur">
-      <input
-        type="range"
-        id="blur__input"
-        name="blur"
-        class="blur__input"
-        min="0"
-        max="1.5"
-        value="0"
-        step="0.02"
-      >
-      <label class="blur__label" for="blur__input">Blur</label>
-    </div>
-    <div class="greyscale">
-      <label for="greyscale__input">Greyscale</label>
-      <select name="choice" id="greyscale__input" class="greyscale__input">
-        <option value="first" selected>OFF</option>
-        <option value="second">ON</option>
-      </select>
-    </div>
-    <div class="upload-image">
-      <label>Upload png image</label>
-      <input
-        type="file"
-        id="upload-image__input"
-        accept="image/png"
-      />
-    </div>
+    <div class="image-editor" hx-get="get-image-editor" hx-trigger="load" hx-swap="innerHTML"></div>
+    
 
-    <!--Getting the images will been htmx later on-->
-    <!-- <img
-      src="/input/c66c3f1c-6d6c-48df-8aa5-97bca34fb3a8.png"
-      alt="A car image"
-    >
-    <img
-      src="/output/c66c3f1c-6d6c-48df-8aa5-97bca34fb3a8.png"
-      alt="A car image with image filters applied"
-    > -->
     <script src="scripts/setup-session.js" type="module"></script>
-    <script src="scripts/silders-values.js" type="module"></script>
+    <script src="scripts/silders-values.js" type="module"></script> 
   </body>
 </html>
