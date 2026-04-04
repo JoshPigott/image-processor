@@ -1,5 +1,5 @@
-export function imageInputView(){
-	return /*html*/`
+export function imageInputView() {
+  return /*html*/ `
   <div class="upload-image">
 		<h2>To begin please upload an image<h2>
 		<p>RGB and RGBA types only supported</p>

@@ -6,14 +6,12 @@ function inputSilderValue(inputType) {
   label.textContent = text;
   input.addEventListener("input", (event) => {
     const text = `${inputType.toUpperCase()}: ${event.target.value}`;
-    
-    
     label.textContent = text;
   });
 }
 
 // Adds input silder to each input with the input range
-function addSilderValues() {
+export function addSilderValues() {
   const inputTypes = [
     "opacity",
     "brightness",
@@ -27,22 +25,3 @@ function addSilderValues() {
     inputSilderValue(inputType);
   });
 }
-
-document.body.addEventListener("htmx:afterSwap", () => {
-  const filter = document.querySelector(".image-editor .filters");
-  if (!filter) return;
-  // Silders have already been set up
-  if (filter.dataset.init === "true") return;
-  addSilderValues();
-  filter.dataset.init = "true";
-});
-
-document.body.addEventListener("htmx:load", () => {
-  const filter = document.querySelector(".image-editor .filters");
-  console.log("filter:", filter);
-  if (!filter) return;
-  // Silders have already been set up
-  if (filter.dataset.init === "true") return;
-  addSilderValues();
-  filter.dataset.init = "true";
-});

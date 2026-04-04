@@ -4,7 +4,6 @@ import { getImageMetadataService } from "./png-decoder.js";
 import { getSessionIdService } from "./sessions.js";
 import { printImageOnCanvas } from "./make-canvas.js";
 
-
 // Write image file to data (later on this may just be writing the pixel data)
 async function addImageFile(image, imageId) {
   const bytes = new Uint8Array(await image.arrayBuffer());
@@ -62,7 +61,7 @@ export async function isValidImage(image) {
 // Adds image if valid and type supported
 export async function addImageService(req, image) {
   if (await isValidImage(image) === false) {
-    return {successful: false};
+    return { successful: false };
   }
   const sessionId = getSessionIdService(req);
   const imageId = crypto.randomUUID();
@@ -74,7 +73,7 @@ export async function addImageService(req, image) {
   // If png type not supported
   if (imageMetadata.pngType !== "rgb" && imageMetadata.pngType !== "rgba") {
     await removeImageFile(imageId);
-    return {successful: false};
+    return { successful: false };
   }
   printImageOnCanvas(imageId);
   dbUpdateLastImageId(sessionId, imageId);
@@ -86,6 +85,5 @@ export async function addImageService(req, image) {
     height: imageMetadata.height,
   });
   console.log("image id:", imageId);
-  return {successful: true, imageId};
+  return { successful: true, imageId };
 }
-

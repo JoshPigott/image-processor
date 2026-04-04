@@ -18,11 +18,16 @@
 ## Commit I still need to do are:
 
 - The current refactor of png decoder
-- Being able to download the image
-- reset image filters -invilad (just for silder) and then for all 
-- Then just the whole frontend
-- Add basic html 👍
-- I think maybe add htmx next 👍
+- reset image filters -invilad (just for silder) and then for all
+- Then just the whole frontend (CSS and header and footer)
+- CRC
+- Feel like that get-image-editor could be send before the create-session but I
+  am not sure (look into this)
+
+- Plan for tomorrow
+  - Being able to download the image 👍
+  - The current refactor of png decoder
+  - reset image filters -invilad (just for silder) and then for all
 
 ## Plan for the reafactor
 

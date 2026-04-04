@@ -1,4 +1,4 @@
-function renderRequest(imageId, filterName){
+function renderRequest(imageId, filterName) {
   return `
     hx-post="/filter-add"
     hx-target=".image-output"
@@ -8,30 +8,31 @@ function renderRequest(imageId, filterName){
 }
 
 // Depending if grey is select or not returns different selected option
-function greyscaleOptions(value){
-  if (value === "true"){
-    return /*html*/`
+function greyscaleOptions(value) {
+  if (value === "true") {
+    return /*html*/ `
       <option value="false">OFF</option>
       <option value="true" selected>ON</option>`;
-  }
-  else{
-    return /*html*/`
+  } else {
+    return /*html*/ `
       <option value="false" selected>OFF</option>
       <option value="true">ON</option>`;
   }
 }
 
 // Makes sure value is always selected even if stite reloads
-function rotateOptions(value){
+function rotateOptions(value) {
   const options = ["0", "90", "180", "270"];
-  return options.map((angle) => /*html*/`
-    <option value=${angle} ${angle === value ? "selected": ""}>${angle} degrees</option>
-  `) ;
+  return options.map((angle) => /*html*/ `
+    <option value=${angle} ${
+    angle === value ? "selected" : ""
+  }>${angle} degrees</option>
+  `);
 }
 
 // All the html and htmx for each filter except for cropping
-export function filtersView(imageId, filterValues){
-  return /*html*/`
+export function filtersView(imageId, filterValues) {
+  return /*html*/ `
     <div class="filters">
       <div class="opacity">
         <input

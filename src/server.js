@@ -3,7 +3,7 @@ import { dbSetUpDatabase } from "./database/schema.js";
 import { expiredSession } from "./services/sessions.js";
 import { compiled } from "./routes/index.js";
 import { serveStatic } from "./middleware/serveStatic.js";
-import { json } from "./utils/json.js";
+import { json } from "./utils/responses.js";
 
 dbSetUpDatabase();
 // Makes sure all session expire at the right time
@@ -25,7 +25,7 @@ async function server(req) {
     if (!matches) continue;
     const parmas = matches.pathname.groups;
 
-    const ctx = { method, req, parmas };
+    const ctx = { method, req, parmas, url };
     return await r.handler(ctx);
   }
 

@@ -14,10 +14,11 @@
 
 ## Features
 
-- PPM image decoding
+- PNG image decoding (only rgb and rgba types supported)
 - Pixels to canvas to file
 - Sessions to of muplite users
 - Filter tracking
+- Image downloading
 
 - **Filters**
 - Editing opacity
@@ -65,18 +66,27 @@
     │   └── sessions.js
     │
     ├── handlers
+    │   ├── filters.js
+    │   ├── image-editor.js
     │   ├── image.js
     │   └── sessions.js
     │
     ├── middleware
-    │   └── serveStaticFiles.js
+    │   └── serveStatic.js
     │
     ├── public
     │   ├── index.html
     │   ├── style.css
     │   │
-    │   └── assets
-    │       └── .gitkeep
+    │   ├── assets
+    │   │   ├── favicon.png
+    │   │   └── .gitkeep
+    │   │
+    │   └── scripts
+    │       ├── editor-init.js
+    │       ├── image-download.js
+    │       ├── setup-session.js
+    │       └── silders-values.js
     │
     ├── routes
     │   └── index.js
@@ -91,11 +101,19 @@
     │   ├── png-decoder.js
     │   └── sessions.js
     │
-    └── utils
-        ├── json.js
-        ├── merge-two-uint8-arrays.js
-        ├── pixels.js
-        └── png-rows.js
+    ├── utils
+    │   ├── file.js
+    │   ├── merge-two-uint8-arrays.js
+    │   ├── pixels.js
+    │   ├── png-rows.js
+    │   └── responses.js
+    │
+    └── views
+        ├── download-image.js
+        ├── filters.js
+        ├── image-editor.js
+        ├── image-input.js
+        └── image-output.js
 ```
 
 ## Key logic flow
@@ -187,4 +205,3 @@ Filters of in the database link to the session. Filters row are per image.
 - you can only add one filter at a time per request.
 - That image may can not be served yet
 - The services should split into wasy more helper functions
-- Feel like that get-image-editor could be send before the create-session but I am not sure
