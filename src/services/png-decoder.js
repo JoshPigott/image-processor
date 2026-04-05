@@ -12,11 +12,11 @@ function readLength(bytes, i) {
   return length;
 }
 
-// Read the next 4 bytes to get chuck type
-function readChuckType(bytes, i) {
-  const chuckTypeBytes = bytes.slice(i, i + 4);
-  const chuckType = new TextDecoder().decode(chuckTypeBytes);
-  return chuckType;
+// Read the next 4 bytes to get chunk type
+function readChunkType(bytes, i) {
+  const chunkTypeBytes = bytes.slice(i, i + 4);
+  const chunkType = new TextDecoder().decode(chunkTypeBytes);
+  return chunkType;
 }
 
 // Gets color type
@@ -34,9 +34,9 @@ function imageType(bytes, colorTypeIndex) {
 
 function isInvalidImageType(imageData) {
   if (imageData.type !== "rgb" && imageData.type !== "rgba") {
-    console.log("fhsdl");
     return false;
   }
+  return true;
 }
 
 // Gets width, height and colour from the header
@@ -55,80 +55,91 @@ function getCompressedBytes(imageData, bytes, i, length) {
   imageData.bytes = mergeTwoUint8Arrays(imageData.bytes, newBytes);
 }
 
-// Depending the chuck type read the data in a different way
-function readChuckData(chuckType, imageData, bytes, i, length) {
-  if (chuckType === "IHDR") {
+// Depending the chunk type read the data in a different way
+function readChunkData(chunkType, imageData, bytes, i, length) {
+  if (chunkType === "IHDR") {
     readHeader(imageData, bytes, i);
-  } else if (chuckType === "IDAT") {
+  } else if (chunkType === "IDAT") {
     getCompressedBytes(imageData, bytes, i, length);
   }
 }
 
 // Convert bytes to a blob and runs them though a deflate algorthm
-async function uncompressBytes(imageData) {
+function createDecompressionStream(imageData){
   const ds = new DecompressionStream("deflate");
   const blob = new Blob([imageData.bytes]);
   const decompressedStream = blob.stream().pipeThrough(ds);
-  // Replaces bytes with the uncompressed byte data
+  return decompressedStream;
+}
+
+// Replaces bytes with the uncompressed byte data
+async function streamToBytes(imageData, decompressedStream){
   imageData.bytes = new Uint8Array(0);
-  for await (const chuck of decompressedStream) {
-    imageData.bytes = mergeTwoUint8Arrays(imageData.bytes, chuck);
+  for await (const chunk of decompressedStream) {
+    imageData.bytes = mergeTwoUint8Arrays(imageData.bytes, chunk);
   }
 }
 
-// Finds chuck type, chuck data length, chuck data, and CRC
-function decode_png_chunks(bytes) {
-  const imageData = {
+function initImageData(){
+  return {
     bytes: new Uint8Array(0),
     height: undefined,
     width: undefined,
     type: undefined,
     valid: true,
-  };
-  // Possible field types are length, chuck type, data, and crc
-  let feildType = "length";
-  let chuckType;
-  let length;
+  }
+}
+
+function _readCrc(){
+  // This is coming later to come
+}
+
+function readChunk(bytes, offset){
+  const chunkTypeOffset = offset + 4;
+  const dataOffset = offset + 8;
+
+  const dataLength = readLength(bytes, offset);
+  const chunkType = readChunkType(bytes, chunkTypeOffset);
+
+  const totalLength = dataLength + 12;
+  return { dataLength, chunkType, dataOffset, totalLength };
+}
+
+function processChunk(chunk, imageData, bytes){
+  readChunkData(
+    chunk.chunkType,
+    imageData,
+    bytes,
+    chunk.dataOffset,
+    chunk.dataLength);
+}
+
+// Finds chunk type, chunk data length, chunk data, and CRC
+function decodePngChunks(bytes) {
+  const imageData = initImageData();
+  // Possible field types are length, chunk type, data, and crc
+
   const pngSignatureEnd = 8;
   let i = pngSignatureEnd;
-  while (i < bytes.length) {
-    // No need to keep processing image if going to reject it
-    if (imageData.valid === false) {
-      console.log("end");
-      return imageData;
-    } // End of png
-    else if (chuckType === "IEND") {
+  while (i < bytes.length && imageData.valid) {
+    const chunk = readChunk(bytes, i);
+    if (chunk.chunkType === "IEND") {
       break;
-    } else if (feildType === "length") {
-      length = readLength(bytes, i);
-      feildType = "chuckType";
-      i += 4;
-      continue;
-    } else if (feildType === "chuckType") {
-      chuckType = readChuckType(bytes, i);
-      feildType = "data";
-      i += 4;
-      continue;
-    } else if (feildType === "data") {
-      readChuckData(chuckType, imageData, bytes, i, length);
-      feildType = "crc";
-      i += length;
-      continue;
-    } else if (feildType === "crc") {
-      // I am not checking it for the first verion
-      i += 4;
-      feildType = "length";
-      continue;
-    }
+    } 
+    processChunk(chunk, imageData, bytes);
+    i += chunk.totalLength;
   }
   return imageData;
 }
 
+
+
 // Decodes a PNG into RGBA pixel data by inflating and filtering image bytes.
 export async function readPngService(imageId) {
   const bytes = await Deno.readFile(`data/images/input/${imageId}.png`);
-  const imageData = decode_png_chunks(bytes);
-  await uncompressBytes(imageData);
+  const imageData = decodePngChunks(bytes);
+  const decompressedStream = createDecompressionStream(imageData);
+  await streamToBytes(imageData, decompressedStream);
   filterBytes(imageData);
   imageData.rgbaValues = imageData.type === "rgb"
     ? rgbToRgba(imageData.bytes)

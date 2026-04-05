@@ -1,4 +1,3 @@
-// Fine
 // No filter is applied just filter type is removed
 export function filterNone({
   row,
