@@ -25,8 +25,8 @@
   am not sure (look into this)
 
 - Plan for tomorrow
-  - Being able to download the image 👍
   - The current refactor of png decoder
+  - CRC
   - reset image filters -invilad (just for silder) and then for all
 
 ## Plan for the reafactor
@@ -34,5 +34,7 @@
 - Move more code into helper funcation
 - Make the png decoder function into more functions
 - Repeat less of the filters
+
+- Step one write each function steeps
 
 uitlis: bytes, row and pixel
