@@ -5,12 +5,12 @@ export function filterNone({
   _pixelsPerRow,
   _bytesPerPixel,
   _imageData,
-  _rowNum,
-}) { 
+  _,
+}) {
   return row.slice(1, row.length);
 }
 
-function getIndexs(rowNum, filteredRowSize){
+function getIndexs(rowNum, filteredRowSize) {
   const aboveStartIndex = (rowNum - 1) * filteredRowSize;
   const aboveEndIndex = rowNum * filteredRowSize;
   return { aboveStartIndex, aboveEndIndex };
@@ -20,22 +20,20 @@ function getIndexs(rowNum, filteredRowSize){
 function getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData) {
   const filteredRowSize = pixelsPerRow * bytesPerPixel;
   // There is no row above
-  if (rowNum === 0){
+  if (rowNum === 0) {
     return new Uint8Array(filteredRowSize);
   }
   const { aboveStartIndex, aboveEndIndex } = getIndexs(rowNum, filteredRowSize);
   return imageData.bytes.slice(aboveStartIndex, aboveEndIndex);
 }
 
-
 // Pixel value at start of row unchanged
-function subEdgeCase(newRow, row, bytesPerPixel){
+function subEdgeCase(newRow, row, bytesPerPixel) {
   for (let j = 0; j < bytesPerPixel; j++) {
     newRow[j] = row[j + 1];
   }
 }
 
-// Okay but some repeat logic
 // Adds left value to the current value for the row
 export function filterSub({
   row,
@@ -46,21 +44,18 @@ export function filterSub({
 }) {
   const newRow = new Uint8Array(row.length - 1);
   subEdgeCase(newRow, row, bytesPerPixel);
-  
+
   for (let i = 1; i < pixelsPerRow; i++) {
     const pixelIndex = i * bytesPerPixel;
-
     for (let j = 0; j < bytesPerPixel; j++) {
       const valueLeft = newRow[pixelIndex - bytesPerPixel + j];
       const value = valueLeft + row[pixelIndex + j + 1];
-
-      newRow[i * bytesPerPixel + j] = value;
+      newRow[pixelIndex + j] = value;
     }
   }
   return newRow;
 }
 
-// Okay but some repeat logic
 // Adds the above value to the current value for the row
 export function filterUp({
   row,
@@ -71,13 +66,12 @@ export function filterUp({
 }) {
   const rowAbove = getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData);
   const newRow = new Uint8Array(row.length - 1);
+
   for (let i = 0; i < pixelsPerRow; i++) {
     const pixelIndex = i * bytesPerPixel;
-
     for (let j = 0; j < bytesPerPixel; j++) {
       const valueAbove = rowAbove[pixelIndex + j];
       const value = valueAbove + row[pixelIndex + j + 1];
-
       newRow[pixelIndex + j] = value;
     }
   }
@@ -85,7 +79,7 @@ export function filterUp({
 }
 
 // Left most pixel values (only using value above)
-function averageEdgeCase(newRow, row, rowAbove, bytesPerPixel){
+function averageEdgeCase(newRow, row, rowAbove, bytesPerPixel) {
   for (let j = 0; j < bytesPerPixel; j++) {
     const valueAbove = rowAbove[j];
     const value = row[j + 1] + (valueAbove / 2);
@@ -93,7 +87,6 @@ function averageEdgeCase(newRow, row, rowAbove, bytesPerPixel){
   }
 }
 
-// Okay but some repeat logic
 // Adds average the of the left and above value to current value for the row
 export function filterAverage({
   row,
@@ -104,9 +97,8 @@ export function filterAverage({
 }) {
   const rowAbove = getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData);
   const newRow = new Uint8Array(row.length - 1);
-
   averageEdgeCase(newRow, row, rowAbove, bytesPerPixel);
-  
+
   // For rest of row
   for (let i = 1; i < pixelsPerRow; i++) {
     const pixelIndex = i * bytesPerPixel;
@@ -114,18 +106,15 @@ export function filterAverage({
       const valueLeft = newRow[pixelIndex - bytesPerPixel + j];
       const valueAbove = rowAbove[pixelIndex + j];
       const average = Math.floor((valueAbove + valueLeft) / 2);
-
       const value = average + row[pixelIndex + j + 1];
-
       newRow[pixelIndex + j] = value;
     }
   }
   return newRow;
 }
 
-// Fine (can be split)
-// Return the closest value to the prediction
-function closestValue(prediction, valueLeft, valueAbove, valueLeftAbove) {
+// Calculates distance to prediction
+function getDistances({ prediction, valueLeft, valueAbove, valueLeftAbove }) {
   const left = { value: valueLeft, distance: Math.abs(prediction - valueLeft) };
   const above = {
     value: valueAbove,
@@ -135,19 +124,29 @@ function closestValue(prediction, valueLeft, valueAbove, valueLeftAbove) {
     value: valueLeftAbove,
     distance: Math.abs(prediction - valueLeftAbove),
   };
+  return { left, above, leftAbove };
+}
 
-  let smallest = left;
-  if (smallest.distance > above.distance) {
-    smallest = above;
+// Finds closest value to the prediction
+function closestValue({ prediction, valueLeft, valueAbove, valueLeftAbove }) {
+  const { left, above, leftAbove } = getDistances({
+    prediction,
+    valueLeft,
+    valueAbove,
+    valueLeftAbove,
+  });
+
+  if (left.distance <= above.distance && left.distance <= leftAbove.distance) {
+    return left.value;
+  } else if (above.distance <= leftAbove.distance) {
+    return above.value;
+  } else {
+    return leftAbove.value;
   }
-  if (smallest.distance > leftAbove.distance) {
-    smallest = leftAbove;
-  }
-  return smallest.value;
 }
 
 // Pixel at start of row closest value is up
-function paethEdgeCase(newRow, row, rowAbove, bytesPerPixel){
+function paethEdgeCase(newRow, row, rowAbove, bytesPerPixel) {
   for (let j = 0; j < bytesPerPixel; j++) {
     const valueAbove = rowAbove[j];
     const value = row[j + 1] + valueAbove;
@@ -155,7 +154,6 @@ function paethEdgeCase(newRow, row, rowAbove, bytesPerPixel){
   }
 }
 
-// Not great needs work too long, too many things
 // Adds on the closest value to a prediction to the current value for a row
 export function filterPaeth({
   row,
@@ -166,7 +164,7 @@ export function filterPaeth({
 }) {
   const rowAbove = getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData);
   const newRow = new Uint8Array(row.length - 1);
-  paethEdgeCase(newRow, row, rowAbove, bytesPerPixel)
+  paethEdgeCase(newRow, row, rowAbove, bytesPerPixel);
 
   for (let i = 1; i < pixelsPerRow; i++) {
     const pixelIndex = i * bytesPerPixel;
@@ -178,7 +176,7 @@ export function filterPaeth({
 
       const prediction = valueLeft + valueAbove - valueLeftAbove;
       const value = row[pixelIndex + j + 1] +
-        closestValue(prediction, valueLeft, valueAbove, valueLeftAbove);
+        closestValue({ prediction, valueLeft, valueAbove, valueLeftAbove });
       newRow[pixelIndex + j] = value;
     }
   }
