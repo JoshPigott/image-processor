@@ -1,6 +1,6 @@
 import { createCanvas } from "@josefabio/deno-canvas";
 import { applyFiltersService } from "./apply-filters.js";
-import { readPngService } from "./png-decoder.js";
+import { readPngService } from "./png-decoder/chunk-parser.js";
 
 export async function printImageOnCanvas(imageId) {
   const imageData = await readPngService(imageId);

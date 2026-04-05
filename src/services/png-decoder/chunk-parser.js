@@ -1,6 +1,6 @@
-import { filterBytes } from "./png-decoder/apply-png-filters.js";
-import { mergeTwoUint8Arrays } from "../utils/merge-two-uint8-arrays.js";
-import { rgbToRgba } from "../utils/pixels.js";
+import { filterBytes } from "./apply-png-filters.js";
+import { mergeTwoUint8Arrays } from "../../utils/merge-two-uint8-arrays.js";
+import { rgbToRgba } from "../../utils/pixels.js";
 
 // Goes from 4 bytes to a length as a number
 function readLength(bytes, i) {
@@ -94,6 +94,7 @@ function _readCrc(){
   // This is coming later to come
 }
 
+// Reads the datalength and chunk type and get offsets
 function readChunk(bytes, offset){
   const chunkTypeOffset = offset + 4;
   const dataOffset = offset + 8;
@@ -132,18 +133,31 @@ function decodePngChunks(bytes) {
   return imageData;
 }
 
+async function readImageBytes(imageId) {
+  return await Deno.readFile(`data/images/input/${imageId}.png`);
+}
 
+async function decompressImageData(imageData) {
+  const decompressedStream = createDecompressionStream(imageData);
+  await streamToBytes(imageData, decompressedStream);
+}
+
+// If in rgb format convert to rgba format
+function convertToRgba(imageData) {
+  imageData.rgbaValues =
+    imageData.type === "rgb"
+      ? rgbToRgba(imageData.bytes)
+      : imageData.bytes;
+}
 
 // Decodes a PNG into RGBA pixel data by inflating and filtering image bytes.
 export async function readPngService(imageId) {
-  const bytes = await Deno.readFile(`data/images/input/${imageId}.png`);
+  const bytes = await readImageBytes(imageId);
   const imageData = decodePngChunks(bytes);
-  const decompressedStream = createDecompressionStream(imageData);
-  await streamToBytes(imageData, decompressedStream);
+
+  await decompressImageData(imageData);
   filterBytes(imageData);
-  imageData.rgbaValues = imageData.type === "rgb"
-    ? rgbToRgba(imageData.bytes)
-    : imageData.bytes;
+  convertToRgba(imageData);
   return imageData;
 }
 

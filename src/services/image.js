@@ -1,6 +1,6 @@
 import { dbUpdateLastImageId } from "../database/sessions.js";
 import { dbAddImage } from "../database/image.js";
-import { getImageMetadataService } from "./png-decoder.js";
+import { getImageMetadataService } from "./png-decoder/chunk-parser.js";
 import { getSessionIdService } from "./sessions.js";
 import { printImageOnCanvas } from "./make-canvas.js";
 
