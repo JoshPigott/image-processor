@@ -1,17 +1,17 @@
 // Fine
 // No filter is applied just filter type is removed
-function filterNone({
+export function filterNone({
   row,
   _pixelsPerRow,
   _bytesPerPixel,
   _imageData,
   _rowNum,
-}) {
+}) { 
   return row.slice(1, row.length);
 }
 
 // Get the row of pixels above current row
-export function getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData) {
+function getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData) {
   const filteredRowSize = pixelsPerRow * bytesPerPixel;
   // There is no row above
   if (rowNum === 0){
@@ -32,7 +32,7 @@ function subEdgeCase(newRow, row, bytesPerPixel){
 
 // Okay but some repeat logic
 // Adds left value to the current value for the row
-function filterSub({
+export function filterSub({
   row,
   pixelsPerRow,
   bytesPerPixel,
@@ -57,7 +57,7 @@ function filterSub({
 
 // Okay but some repeat logic
 // Adds the above value to the current value for the row
-function filterUp({
+export function filterUp({
   row,
   pixelsPerRow,
   bytesPerPixel,
@@ -90,7 +90,7 @@ function averageEdgeCase(newRow, row, rowAbove, bytesPerPixel){
 
 // Okay but some repeat logic
 // Adds average the of the left and above value to current value for the row
-function filterAverage({
+export function filterAverage({
   row,
   pixelsPerRow,
   bytesPerPixel,
@@ -118,7 +118,7 @@ function filterAverage({
   return newRow;
 }
 
-// Fine
+// Fine (can be split)
 // Return the closest value to the prediction
 function closestValue(prediction, valueLeft, valueAbove, valueLeftAbove) {
   const left = { value: valueLeft, distance: Math.abs(prediction - valueLeft) };
@@ -152,7 +152,7 @@ function paethEdgeCase(newRow, row, rowAbove, bytesPerPixel){
 
 // Not great needs work too long, too many things
 // Adds on the closest value to a prediction to the current value for a row
-function filterPaeth({
+export function filterPaeth({
   row,
   pixelsPerRow,
   bytesPerPixel,
@@ -178,62 +178,4 @@ function filterPaeth({
     }
   }
   return newRow;
-}
-
-// Calls the correct filter type function
-function filterRow(row, pixelsPerRow, bytesPerPixel, imageData, rowNum) {
-  const filterType = row[0];
-  const filters = [filterNone, filterSub, filterUp, filterAverage, filterPaeth];
-  return filters[filterType]({
-    row,
-    pixelsPerRow,
-    bytesPerPixel,
-    imageData,
-    rowNum,
-  });
-}
-
-// Slices the to get a spefic row with the filter type
-function getUnfilteredRow(rowNum, unfilteredBytes, unfilteredRowSize){
-  const startIndex = rowNum * unfilteredRowSize;
-  const endIndex = rowNum * unfilteredRowSize + unfilteredRowSize;
-  const unfilteredRow = unfilteredBytes.slice(startIndex, endIndex);
-  return unfilteredRow;
-}
-
-// Allows filted bytes to be add now
-function resetImageBytes(imageData, unfilteredBytes){
-  imageData.bytes = new Uint8Array(unfilteredBytes.length - imageData.height);
-}
-
-function getRowSizes(imageData, bytesPerPixel){
-  const pixelsPerRow = imageData.width;
-  const filteredRowSize = pixelsPerRow * bytesPerPixel;
-  const unfilteredRowSize = filteredRowSize + 1;
-  return [pixelsPerRow, filteredRowSize, unfilteredRowSize];
-}
-
-function addFilteredBytes(imageData, filteredRow, rowNum, filteredRowSize){
-  const offset = rowNum * filteredRowSize;
-  imageData.bytes.set(filteredRow, offset);
-}
-
-// Slices bytes in row correct to be filtered and collects filtered rows
-export function filterBytes(imageData) {
-  const unfilteredBytes = imageData.bytes;
-  const bytesPerPixel = (imageData.type === "rgb" ? 3 : 4);
-  resetImageBytes(imageData, unfilteredBytes);
-  const [pixelsPerRow, filteredRowSize, unfilteredRowSize] = getRowSizes(imageData, bytesPerPixel);
-
-  for (let rowNum = 0; rowNum < imageData.height; rowNum++) {
-    const unfilteredRow = getUnfilteredRow(rowNum, unfilteredBytes, unfilteredRowSize);
-    const filteredRow = filterRow(
-      unfilteredRow,
-      pixelsPerRow,
-      bytesPerPixel,
-      imageData,
-      rowNum,
-    );
-    addFilteredBytes(imageData, filteredRow, rowNum, filteredRowSize);
-  }
 }

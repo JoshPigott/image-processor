@@ -1,4 +1,4 @@
-import { filterBytes } from "./png-decoder-filters.js";
+import { filterBytes } from "./png-decoder/apply-png-filters.js";
 import { mergeTwoUint8Arrays } from "../utils/merge-two-uint8-arrays.js";
 import { rgbToRgba } from "../utils/pixels.js";
 
