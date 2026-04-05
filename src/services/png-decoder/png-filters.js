@@ -10,6 +10,12 @@ export function filterNone({
   return row.slice(1, row.length);
 }
 
+function getIndexs(rowNum, filteredRowSize){
+  const aboveStartIndex = (rowNum - 1) * filteredRowSize;
+  const aboveEndIndex = rowNum * filteredRowSize;
+  return { aboveStartIndex, aboveEndIndex };
+}
+
 // Get the row of pixels above current row
 function getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData) {
   const filteredRowSize = pixelsPerRow * bytesPerPixel;
@@ -17,8 +23,7 @@ function getRowAbove(rowNum, pixelsPerRow, bytesPerPixel, imageData) {
   if (rowNum === 0){
     return new Uint8Array(filteredRowSize);
   }
-  const aboveStartIndex = (rowNum - 1) * filteredRowSize;
-  const aboveEndIndex = rowNum * filteredRowSize;
+  const { aboveStartIndex, aboveEndIndex } = getIndexs(rowNum, filteredRowSize);
   return imageData.bytes.slice(aboveStartIndex, aboveEndIndex);
 }
 

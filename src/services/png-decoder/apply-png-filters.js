@@ -30,7 +30,7 @@ function getRowSizes(imageData, bytesPerPixel){
   const pixelsPerRow = imageData.width;
   const filteredRowSize = pixelsPerRow * bytesPerPixel;
   const unfilteredRowSize = filteredRowSize + 1;
-  return [pixelsPerRow, filteredRowSize, unfilteredRowSize];
+  return { pixelsPerRow, filteredRowSize, unfilteredRowSize };
 }
 
 function addFilteredBytes(imageData, filteredRow, rowNum, filteredRowSize){
@@ -43,7 +43,7 @@ export function filterBytes(imageData) {
   const unfilteredBytes = imageData.bytes;
   const bytesPerPixel = (imageData.type === "rgb" ? 3 : 4);
   resetImageBytes(imageData, unfilteredBytes);
-  const [pixelsPerRow, filteredRowSize, unfilteredRowSize] = getRowSizes(imageData, bytesPerPixel);
+  const { pixelsPerRow, filteredRowSize, unfilteredRowSize } = getRowSizes(imageData, bytesPerPixel);
 
   for (let rowNum = 0; rowNum < imageData.height; rowNum++) {
     const unfilteredRow = getUnfilteredRow(rowNum, unfilteredBytes, unfilteredRowSize);
