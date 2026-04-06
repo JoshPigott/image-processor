@@ -1,4 +1,6 @@
 import { filterBytes } from "./apply-png-filters.js";
+import { crcChecker } from "./check-crc.js";
+import { decompressImageData } from "./decompress-bytes.js";
 import { mergeTwoUint8Arrays } from "../../utils/merge-two-uint8-arrays.js";
 import { rgbToRgba } from "../../utils/pixels.js";
 
@@ -64,38 +66,18 @@ function readChunkData(chunkType, imageData, bytes, i, length) {
   }
 }
 
-// Convert bytes to a blob and runs them though a deflate algorthm
-function createDecompressionStream(imageData){
-  const ds = new DecompressionStream("deflate");
-  const blob = new Blob([imageData.bytes]);
-  const decompressedStream = blob.stream().pipeThrough(ds);
-  return decompressedStream;
-}
-
-// Replaces bytes with the uncompressed byte data
-async function streamToBytes(imageData, decompressedStream){
-  imageData.bytes = new Uint8Array(0);
-  for await (const chunk of decompressedStream) {
-    imageData.bytes = mergeTwoUint8Arrays(imageData.bytes, chunk);
-  }
-}
-
-function initImageData(){
+function initImageData() {
   return {
     bytes: new Uint8Array(0),
     height: undefined,
     width: undefined,
     type: undefined,
     valid: true,
-  }
-}
-
-function _readCrc(){
-  // This is coming later to come
+  };
 }
 
 // Reads the datalength and chunk type and get offsets
-function readChunk(bytes, offset){
+function readChunk(bytes, offset) {
   const chunkTypeOffset = offset + 4;
   const dataOffset = offset + 8;
 
@@ -103,16 +85,25 @@ function readChunk(bytes, offset){
   const chunkType = readChunkType(bytes, chunkTypeOffset);
 
   const totalLength = dataLength + 12;
-  return { dataLength, chunkType, dataOffset, totalLength };
+  const crcOutputOffset = dataOffset + dataLength;
+  return {
+    dataLength,
+    chunkType,
+    chunkTypeOffset,
+    dataOffset,
+    crcOutputOffset,
+    totalLength,
+  };
 }
 
-function processChunk(chunk, imageData, bytes){
+function processChunk(chunk, imageData, bytes) {
   readChunkData(
     chunk.chunkType,
     imageData,
     bytes,
     chunk.dataOffset,
-    chunk.dataLength);
+    chunk.dataLength,
+  );
 }
 
 // Finds chunk type, chunk data length, chunk data, and CRC
@@ -126,7 +117,8 @@ function decodePngChunks(bytes) {
     const chunk = readChunk(bytes, i);
     if (chunk.chunkType === "IEND") {
       break;
-    } 
+    }
+    imageData.valid = crcChecker(bytes, chunk);
     processChunk(chunk, imageData, bytes);
     i += chunk.totalLength;
   }
@@ -137,23 +129,18 @@ async function readImageBytes(imageId) {
   return await Deno.readFile(`data/images/input/${imageId}.png`);
 }
 
-async function decompressImageData(imageData) {
-  const decompressedStream = createDecompressionStream(imageData);
-  await streamToBytes(imageData, decompressedStream);
-}
-
 // If in rgb format convert to rgba format
 function convertToRgba(imageData) {
-  imageData.rgbaValues =
-    imageData.type === "rgb"
-      ? rgbToRgba(imageData.bytes)
-      : imageData.bytes;
+  imageData.rgbaValues = imageData.type === "rgb"
+    ? rgbToRgba(imageData.bytes)
+    : imageData.bytes;
 }
 
 // Decodes a PNG into RGBA pixel data by inflating and filtering image bytes.
 export async function readPngService(imageId) {
   const bytes = await readImageBytes(imageId);
   const imageData = decodePngChunks(bytes);
+  if (imageData.valid === false) return undefined;
 
   await decompressImageData(imageData);
   filterBytes(imageData);
