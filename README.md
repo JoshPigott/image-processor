@@ -34,10 +34,11 @@
 ## File structure
 
 ```text
+current
 ├── deno.json
 ├── deno.lock
-├── README.md
 ├── plan.md
+├── README.md
 │
 ├── .vscode
 │   └── settings.json
@@ -97,15 +98,19 @@
     │   ├── filters.js
     │   ├── image.js
     │   ├── make-canvas.js
-    │   ├── png-decoder-filters.js
-    │   ├── png-decoder.js
-    │   └── sessions.js
+    │   ├── sessions.js
+    │   │
+    │   └── png-decoder
+    │       ├── apply-png-filters.js
+    │       ├── check-crc.js
+    │       ├── chunk-parser.js
+    │       ├── decompress-bytes.js
+    │       └── png-filters.js
     │
     ├── utils
     │   ├── file.js
     │   ├── merge-two-uint8-arrays.js
     │   ├── pixels.js
-    │   ├── png-rows.js
     │   └── responses.js
     │
     └── views
@@ -118,12 +123,25 @@
 
 ## Key logic flow
 
-- **How the png decoder works**
-  - Split bytes into PNG chunks: length, type, data, CRC
-  - Parse data differently depending upon chuck type
-  - Concatenate pixel chunks; build compressed image stream
-  - Deflate decompress `pipeThrough(ds)`; return unfiltered image bytes +
-    metadata
+# PNG Decoder Overview
+
+- **Chunk Parser**
+- Split bytes into PNG chunks: `length`, `type`, `data`, `CRC`
+- Parse each chunk based on type (`IHDR`, `IDAT`, `IEND`)
+- Concatenate `IDAT` chunks to build compressed image stream
+
+- **CRC32 Validator**
+  - Compute CRC32 on chunk type + data
+    - Starts with 32 bits of 1s `0xFFFFFFFF`
+    - XOR with `byte`
+    - Shift to the right 8 time each time if dropped byte is a 1 XOR with
+      `0xEDB88320`
+    - XOR with `0xFFFFFFFF` at end
+  - Compares with chunk CRC to check for corruption
+
+- **Decompression**
+- Deflate decompress the concatenated pixel stream (`pipeThrough(ds)`)
+  - Returns unfiltered image bytes + metadata
 
 - **How the filters work**
   - Apply filters to decompressed, unfiltered scanlines
@@ -134,10 +152,6 @@
   - Average: adds mean of left and above
   - Paeth: adds closest of (left, above, leftAbove) to the predictor
     `valueLeft + valueAbove - valueLeftAbove`
-
-- Coming soon
-
-Filters of in the database link to the session. Filters row are per image.
 
 ## How all the filters work
 

@@ -4,6 +4,12 @@ import { readPngService } from "./png-decoder/chunk-parser.js";
 
 export async function printImageOnCanvas(imageId) {
   const imageData = await readPngService(imageId);
+  if (imageData === undefined) {
+    console.log(
+      "An error has occurred when reading the png. Unable to print image.",
+    );
+    return;
+  }
 
   applyFiltersService(imageId, imageData);
   const canvas = createCanvas(imageData.width, imageData.height);
