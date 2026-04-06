@@ -46,6 +46,15 @@ export function applyGreyscaleService(rgbaValues) {
   }
 }
 
+// Loops over each rgb value increasing distance from grey average in a linear way
+function scaleColorDistanceFromGrey(rgbaValues, greyAverage, i, satrationMultiplierValue){
+  for (let j = 0; j < 3; j++) {
+    const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
+    const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
+    rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
+  }
+}
+
 // Change distance from grey average with a constant multiplier
 export function applySaturationService(rgbaValues, satrationMultiplierValue) {
   for (let i = 0; i + 2 < rgbaValues.length; i += 4) {
@@ -54,13 +63,18 @@ export function applySaturationService(rgbaValues, satrationMultiplierValue) {
     const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
+    scaleColorDistanceFromGrey(rgbaValues, greyAverage, i, satrationMultiplierValue);
+  }
+}
 
-    // Increases distance from the grey average
-    for (let j = 0; j < 3; j++) {
-      const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
-      const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
-      rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
-    }
+// Loops over each rgb value increasing distance from grey average in a non linear way
+function enhanceColorDistanceFromGrey(rgbaValues, greyAverage, i, vibranceValue){
+for (let j = 0; j < 3; j++) {
+    const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
+    const vibranceMultiplier = 1 +
+      vibranceValue * (1 - (distanceFromGreyAverage / 255));
+    const newDistance = distanceFromGreyAverage * vibranceMultiplier;
+    rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
   }
 }
 
@@ -72,15 +86,7 @@ export function applyVibranceService(rgbaValues, vibranceValue) {
     const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
-
-    // Increases distance from the grey average
-    for (let j = 0; j < 3; j++) {
-      const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
-      const vibranceMultiplier = 1 +
-        vibranceValue * (1 - (distanceFromGreyAverage / 255));
-      const newDistance = distanceFromGreyAverage * vibranceMultiplier;
-      rgbaValues[i + j] = clapPixelValue(greyAverage + newDistance);
-    }
+    enhanceColorDistanceFromGrey(rgbaValues, greyAverage, i, vibranceValue)
   }
 }
 
