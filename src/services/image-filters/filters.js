@@ -1,4 +1,4 @@
-import { clapPixelValue } from "../utils/pixels.js";
+import { clapPixelValue } from "../../utils/pixels.js";
 
 // Updates opacity value
 export function applyOpacityService(rgbaValues, opacityValue) {

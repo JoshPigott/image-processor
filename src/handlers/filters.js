@@ -1,8 +1,8 @@
 import { dbIsFilter, dbRemoveFilter } from "../database/filters.js";
 import { dbGetImageDimensions } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
-import { isValidFilterService } from "../services/filters-validation.js";
-import { chagneFilterService } from "../services/apply-filters.js";
+import { isValidFilterService } from "../services/image-filters/filters-validation.js";
+import { chagneFilterService } from "../services/image-filters/apply-filters.js";
 import { imageOutputView } from "../views/image-output.js";
 import { htmlResponse, json } from "../utils/responses.js";
 

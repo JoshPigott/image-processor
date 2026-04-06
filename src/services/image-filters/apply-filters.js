@@ -4,7 +4,7 @@ import {
   dbIsFilter,
   dbRemoveFilter,
   dbUpdateFilter,
-} from "../database/filters.js";
+} from "../../database/filters.js";
 import {
   applyBrightnessService,
   applyContrastService,
@@ -16,8 +16,8 @@ import {
   blurService,
   croppingService,
   sharpeningService,
-} from "../services/filters.js";
-import { printImageOnCanvas } from "./make-canvas.js";
+} from "./filters.js";
+import { printImageOnCanvas } from "../make-canvas.js";
 
 // Links filter to order of applying
 function getFilterOrder() {
@@ -82,8 +82,8 @@ export function applyFiltersService(imageId, imageData) {
   runFilterHandlers(imageData, filters);
 }
 
-// Refactor need maybe
-// Updates filter value in db and return response
+
+// Adds, updates, or removes filters based on value.
 export async function chagneFilterService(
   isFilterValid,
   sessionId,
@@ -92,7 +92,7 @@ export async function chagneFilterService(
   value,
 ) {
   const filterApplied = dbIsFilter(imageId, filterName);
-  // Defualt value so no need to track and apply filter
+  // Default value, remove filter 
   if (isFilterValid.default === true) {
     dbRemoveFilter(imageId, filterName);
   } // Filter is not being applied

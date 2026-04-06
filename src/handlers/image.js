@@ -1,4 +1,4 @@
-import { filterValuesService } from "../services/apply-filters.js";
+import { filterValuesService } from "../services/image-filters/apply-filters.js";
 import { addImageService } from "../services/image.js";
 import { imageEditorView } from "../views/image-editor.js";
 import { blobResponse, htmlResponse } from "../utils/responses.js";

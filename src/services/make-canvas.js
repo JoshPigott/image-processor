@@ -1,5 +1,5 @@
 import { createCanvas } from "@josefabio/deno-canvas";
-import { applyFiltersService } from "./apply-filters.js";
+import { applyFiltersService } from "./image-filters/apply-filters.js";
 import { readPngService } from "./png-decoder/chunk-parser.js";
 
 // Refactor need
