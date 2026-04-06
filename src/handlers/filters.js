@@ -6,14 +6,21 @@ import { chagneFilterService } from "../services/apply-filters.js";
 import { imageOutputView } from "../views/image-output.js";
 import { htmlResponse, json } from "../utils/responses.js";
 
-// Adds filter to database unless valid
-export async function addFilter(ctx) {
-  const sessionId = getSessionIdService(ctx.req);
-  const formData = await ctx.req.formData();
+// The info need to add a filter
+async function getFilterInfo(formData, req) {
+  const sessionId = getSessionIdService(req);
   const imageId = formData.get("imageId");
   const filterName = formData.get("filterName");
   const value = formData.get("filterValue");
   const imageDimensions = await dbGetImageDimensions(imageId);
+  return { sessionId, imageId, filterName, value, imageDimensions };
+}
+
+// Adds filter to database unless valid
+export async function addFilter(ctx) {
+  const formData = await ctx.req.formData();
+  const { sessionId, imageId, filterName, value, imageDimensions } =
+    await getFilterInfo(formData, ctx.req);
 
   const isFilterValid = isValidFilterService(
     filterName,

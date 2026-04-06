@@ -20,11 +20,10 @@
 - refactor some of the service and handlers
 - reset image filters -invilad (just for silder) and then for all
 - Then just the whole frontend (CSS and header and footer)
-- CRC
 
 - Plan for tomorrow
-  - CRC
   - reset image filters -invilad (just for silder) and then for all
+  - refactor some of the service and handlers
 
 ## Plan for the reafactor
 

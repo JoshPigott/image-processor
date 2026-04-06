@@ -96,6 +96,7 @@ function validateSpecific(value, filterValueInfo) {
   };
 }
 
+// Refactor need
 // Check that cropping values are postive and not big then image
 function validateCropping(value, imageDimensions) {
   try {

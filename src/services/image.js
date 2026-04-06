@@ -58,6 +58,7 @@ export async function isValidImage(image) {
   return true;
 }
 
+// Refactor need
 // Adds image if valid and type supported
 export async function addImageService(req, image) {
   if (await isValidImage(image) === false) {

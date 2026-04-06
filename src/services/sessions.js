@@ -7,6 +7,7 @@ import {
 import { dbDeleteAllFilters } from "../database/filters.js";
 import { dbDeleteUsersImages, dbGetAllUsersImages } from "../database/image.js";
 
+// Refactor need
 // Removes users data from database and remove users images
 async function cleanUp(sessionId) {
   const images = dbGetAllUsersImages(sessionId);
@@ -41,6 +42,7 @@ export function createSessionService() {
   return sessionId;
 }
 
+// Refactor need
 // Runs when server start up to sure only valid sessions
 export async function expiredSession() {
   const timeNow = Date.now();

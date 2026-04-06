@@ -17,5 +17,5 @@ export function createSession(_ctx) {
 
 export function getSession(ctx) {
   getSessionService(ctx.req);
-  return json({ sessionId: "Great question" }, { status: 200 });
+  return json({ sessionId }, { status: 200 });
 }

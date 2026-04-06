@@ -19,10 +19,9 @@ import {
 } from "../services/filters.js";
 import { printImageOnCanvas } from "./make-canvas.js";
 
-// Apply all the filters in the database in a specific order
-export function applyFiltersService(imageId, imageData) {
-  // Links filter to order of applying
-  const filterOrder = {
+// Links filter to order of applying
+function getFilterOrder() {
+  return {
     "opacity": 0,
     "brightness": 1,
     "contrast": 2,
@@ -34,39 +33,56 @@ export function applyFiltersService(imageId, imageData) {
     "crop": 8,
     "rotate": 9,
   };
+}
+
+// Links filter and there handler together
+function getFilterHandlers() {
+  // Value stored as TEXT so filter value will need to convert back to a number
+  return {
+    opacity: (imageData, filter) =>
+      applyOpacityService(imageData.rgbaValues, Number(filter.value)),
+    brightness: (imageData, filter) =>
+      applyBrightnessService(imageData.rgbaValues, Number(filter.value)),
+    contrast: (imageData, filter) =>
+      applyContrastService(imageData.rgbaValues, Number(filter.value)),
+    saturation: (imageData, filter) =>
+      applySaturationService(imageData.rgbaValues, Number(filter.value)),
+    vibrance: (imageData, filter) =>
+      applyVibranceService(imageData.rgbaValues, Number(filter.value)),
+    greyscale: (imageData) => applyGreyscaleService(imageData.rgbaValues),
+    blur: (imageData, filter) => blurService(imageData, Number(filter.value)),
+    sharpen: (imageData, filter) =>
+      sharpeningService(imageData, Number(filter.value)),
+    crop: (imageData, filter) => croppingService(imageData, filter.value),
+    rotate: (imageData, filter) =>
+      applyRotationService(imageData, Number(filter.value)),
+  };
+}
+
+// Loops each filter and if in filter handler runs handler
+function runFilterHandlers(imageData, filters) {
+  const filterHandlers = getFilterHandlers();
+  filters.forEach((filter) => {
+    const handler = filterHandlers[filter.filterName];
+    if (handler) {
+      handler(imageData, filter);
+    }
+  });
+}
+
+// Apply all the filters in the database in a specific order
+export function applyFiltersService(imageId, imageData) {
+  const filterOrder = getFilterOrder();
   // Get all the filters being applied
   const filters = dbGetFilters(imageId);
   // Sort by order of filters
   filters.sort((filterOne, filterTwo) => {
     filterOrder[filterOne.filterName] - filterOrder[filterTwo.filterName];
   });
-
-  filters.forEach((filter) => {
-    // Value stored as TEXT so filter value will need to convert back to a number
-    if (filter.filterName === "opacity") {
-      applyOpacityService(imageData.rgbaValues, Number(filter.value));
-    } else if (filter.filterName === "brightness") {
-      applyBrightnessService(imageData.rgbaValues, Number(filter.value));
-    } else if (filter.filterName === "contrast") {
-      applyContrastService(imageData.rgbaValues, Number(filter.value));
-    } else if (filter.filterName === "saturation") {
-      applySaturationService(imageData.rgbaValues, Number(filter.value));
-    } else if (filter.filterName === "vibrance") {
-      applyVibranceService(imageData.rgbaValues, Number(filter.value));
-    } else if (filter.filterName === "greyscale") {
-      applyGreyscaleService(imageData.rgbaValues);
-    } else if (filter.filterName === "blur") {
-      blurService(imageData, Number(filter.value));
-    } else if (filter.filterName === "sharpen") {
-      sharpeningService(imageData, Number(filter.value));
-    } else if (filter.filterName === "crop") {
-      croppingService(imageData, filter.value);
-    } else if (filter.filterName === "rotate") {
-      applyRotationService(imageData, Number(filter.value));
-    }
-  });
+  runFilterHandlers(imageData, filters);
 }
 
+// Refactor need maybe
 // Updates filter value in db and return response
 export async function chagneFilterService(
   isFilterValid,
