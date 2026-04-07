@@ -17,7 +17,7 @@ import {
   croppingService,
   sharpeningService,
 } from "./filters.js";
-import { printImageOnCanvas } from "../make-canvas.js";
+import { renderImageOutput } from "../make-canvas.js";
 
 // Links filter to order of applying
 function getFilterOrder() {
@@ -101,7 +101,7 @@ export async function chagneFilterService(
   else {
     dbUpdateFilter(imageId, filterName, value);
   }
-  await printImageOnCanvas(imageId);
+  await renderImageOutput(imageId);
 }
 
 // Gets current filters values for when stite reloads

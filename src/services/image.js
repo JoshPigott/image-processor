@@ -2,7 +2,7 @@ import { dbUpdateLastImageId } from "../database/sessions.js";
 import { dbAddImage } from "../database/image.js";
 import { getImageMetadataService } from "./png-decoder/chunk-parser.js";
 import { getSessionIdService } from "./sessions.js";
-import { printImageOnCanvas } from "./make-canvas.js";
+import { renderImageOutput } from "./make-canvas.js";
 
 // Write image file to data (later on this may just be writing the pixel data)
 async function addImageFile(image, imageId) {
@@ -80,7 +80,7 @@ export async function addImageService(req, image) {
     await removeImageFile(imageId);
     return { successful: false };
   }
-  printImageOnCanvas(imageId);
+  renderImageOutput(imageId);
   dbUpdateLastImageId(sessionId, imageId);
   dbAddImage({
     sessionId,
