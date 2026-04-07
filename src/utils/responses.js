@@ -12,7 +12,7 @@ export function json(data, init) {
   return new Response(JSON.stringify(data), { ...headers, init });
 }
 
-// Set the content type of the request to application/json
+// Set the content type of the request to application/octet-stream
 export function blobResponse(data, init) {
   const headers = new Headers(init?.headers);
   headers.set("Content-Type", "application/octet-stream");

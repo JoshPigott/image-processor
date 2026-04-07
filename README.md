@@ -34,7 +34,6 @@
 ## File structure
 
 ```text
-current
 ├── deno.json
 ├── deno.lock
 ├── plan.md
@@ -93,19 +92,21 @@ current
     │   └── index.js
     │
     ├── services
-    │   ├── apply-filters.js
-    │   ├── filters-validation.js
-    │   ├── filters.js
     │   ├── image.js
-    │   ├── make-canvas.js
+    │   ├── render-image-output.js
     │   ├── sessions.js
+    │   │
+    │   ├── image-filters
+    │   │   ├── apply-filters.js
+    │   │   ├── filters-validation.js
+    │   │   └── filters.js
     │   │
     │   └── png-decoder
     │       ├── apply-png-filters.js
     │       ├── check-crc.js
     │       ├── chunk-parser.js
     │       ├── decompress-bytes.js
-    │       └── png-filters.js
+    │       └── png-decoder-filters.js
     │
     ├── utils
     │   ├── file.js
@@ -218,4 +219,4 @@ current
 
 - you can only add one filter at a time per request.
 - That image may can not be served yet
-- The services should split into wasy more helper functions
+- There is a bug in download image

@@ -4,7 +4,7 @@ import {
   filterPaeth,
   filterSub,
   filterUp,
-} from "./png-filters.js";
+} from "./png-decoder-filters.js";
 
 // Calls the correct filter type function
 function filterRow(row, pixelsPerRow, bytesPerPixel, imageData, rowNum) {

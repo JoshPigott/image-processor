@@ -1,4 +1,4 @@
-import { filterValuesService } from "../services/apply-filters.js";
+import { filterValuesService } from "../services/image-filters/apply-filters.js";
 import { getSessionIdService } from "../services/sessions.js";
 import { dbGetLastImageId } from "../database/sessions.js";
 import { dbGetImage } from "../database/image.js";

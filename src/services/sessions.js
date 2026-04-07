@@ -7,28 +7,41 @@ import {
 import { dbDeleteAllFilters } from "../database/filters.js";
 import { dbDeleteUsersImages, dbGetAllUsersImages } from "../database/image.js";
 
-// Removes users data from database and remove users images
-async function cleanUp(sessionId) {
+async function deleteImageFile(imageId) {
+  try {
+    await Deno.remove(`data/images/input/${imageId}.png`);
+    await Deno.remove(`data/images/output/${imageId}.png`);
+  } catch (_err) {
+    // File images were deleted or not made
+  }
+}
+
+// Deletes all users image file so images don't build up
+async function deleteImageFiles(sessionId) {
   const images = dbGetAllUsersImages(sessionId);
   for (const image of images) {
-    try {
-      await Deno.remove(`data/images/input/${image.imageId}.png`);
-      await Deno.remove(`data/images/output/${image.imageId}.png`);
-    } catch (_err) {
-      // File images were deleted or not made
-    }
+    await deleteImageFile(image.imageId);
   }
+}
+
+// Removes users data from database and remove users images
+async function cleanUp(sessionId) {
+  await deleteImageFiles(sessionId);
   dbDeleteAllFilters(sessionId);
   dbDeleteUsersImages(sessionId);
   dbDeleteSession(sessionId);
   console.log(`Session ${sessionId} was deleted`);
 }
 
+function getExpiryTime(sixHours) {
+  const timeNow = Date.now();
+  return timeNow + sixHours;
+}
+
 // Create a session with a expiry time
 export function createSessionService() {
   const sixHours = 1000 * 60 * 60 * 6;
-  const timeNow = Date.now();
-  const expiryTime = timeNow + sixHours;
+  const expiryTime = getExpiryTime(sixHours);
   const sessionId = crypto.randomUUID();
 
   // Deletes session when it expiries
@@ -41,6 +54,14 @@ export function createSessionService() {
   return sessionId;
 }
 
+// Deletes session when it expiries
+function scheduleSessionCleanup(session, timeNow) {
+  const timeTillExpiry = session.expiryTime - timeNow;
+  setTimeout(async () => {
+    await cleanUp(session.sessionId);
+  }, timeTillExpiry);
+}
+
 // Runs when server start up to sure only valid sessions
 export async function expiredSession() {
   const timeNow = Date.now();
@@ -48,18 +69,14 @@ export async function expiredSession() {
   // Converts expiryTime back to a number
   sessions = sessions.map((session) => ({
     sessionId: session.sessionId,
-    expiryTime: session.expiryTime,
+    expiryTime: Number(session.expiryTime),
   }));
 
   for (const session of sessions) {
     if (session.expiryTime <= timeNow) {
       await cleanUp(session.sessionId);
     } else {
-      // Deletes session when it expiries
-      const timeTillExpiry = session.expiryTime - timeNow;
-      setTimeout(async () => {
-        await cleanUp(session.sessionId);
-      }, timeTillExpiry);
+      scheduleSessionCleanup(session, timeNow);
     }
   }
 }

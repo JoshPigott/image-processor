@@ -1,6 +1,5 @@
 // Whitelist all valid filter with a default value, type and allow values
 function defineValidFilterService() {
-  // All filters not built
   const validFilters = {
     "opacity": {
       "type": "range",
@@ -96,24 +95,43 @@ function validateSpecific(value, filterValueInfo) {
   };
 }
 
+function isDefaultCroppingValues(croppingValues) {
+  return croppingValues === [0, 0, 0, 0];
+}
+
+function validateCropPositiveValues(top, bottom, left, right) {
+  return top >= 0 && bottom >= 0 && left >= 0 && right >= 0;
+}
+
+function isVerticalCropValid(top, bottom, imageDimensions) {
+  return top + bottom < imageDimensions.height;
+}
+
+function isHorizontalCropValid(left, right, imageDimensions) {
+  return left + right < imageDimensions.width;
+}
+
 // Check that cropping values are postive and not big then image
+function isvalidCrop(croppingValues, imageDimensions) {
+  const top = croppingValues[0];
+  const bottom = croppingValues[1];
+  const left = croppingValues[2];
+  const right = croppingValues[3];
+
+  if (!validateCropPositiveValues(top, bottom, left, right)) return false;
+  if (!isVerticalCropValid(top, bottom, imageDimensions)) return false;
+  if (!isHorizontalCropValid(left, right, imageDimensions)) return false;
+}
+
+// Checks if crop are default and valid
 function validateCropping(value, imageDimensions) {
   try {
     // Converts cropping from string into array
     const croppingValues = JSON.parse(value);
     croppingValues.map((croppingValue) => Number(croppingValue));
-
-    const top = croppingValues[0];
-    const bottom = croppingValues[1];
-    const left = croppingValues[2];
-    const right = croppingValues[3];
-
-    if (croppingValues === [0, 0, 0, 0]) {
+    if (isDefaultCroppingValues(croppingValues)) {
       return { "valid": true, "default": true };
-    } else if (top + bottom >= imageDimensions.height) {
-      return { "valid": false };
-    } else if (left + right >= imageDimensions.width) return { "valid": false };
-    else if (top < 0 || bottom < 0 || left < 0 || right < 0) {
+    } else if (isvalidCrop(croppingValues, imageDimensions) === false) {
       return { "valid": false };
     } else return { "valid": true, "default": false };
   } catch (_err) {
