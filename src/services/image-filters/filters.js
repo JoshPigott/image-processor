@@ -196,7 +196,7 @@ export function applyRotationService(imageData, rotationValue) {
   }
 }
 
-function getNeighbours(i, imageData){
+function getNeighbours(i, imageData) {
   const direct = [
     i - imageData.width,
     i + imageData.width,
@@ -212,22 +212,21 @@ function getNeighbours(i, imageData){
   return { direct, diagonal };
 }
 
-function getDirectNeighboursSum(directNeighbours, j, imageData){
+function getDirectNeighboursSum(directNeighbours, j, imageData) {
   let directNeighboursSum = 0;
-    directNeighbours.forEach((index) => {
-      directNeighboursSum += imageData.rgbaValues[index * 4 + j];
+  directNeighbours.forEach((index) => {
+    directNeighboursSum += imageData.rgbaValues[index * 4 + j];
   });
   return directNeighboursSum;
 }
 
-function getDiagonalNeighboursSum(diagonalNeighbours, j, imageData){
+function getDiagonalNeighboursSum(diagonalNeighbours, j, imageData) {
   let diagonalNeighboursSum = 0;
   diagonalNeighbours.forEach((index) => {
     diagonalNeighboursSum += imageData.rgbaValues[index * 4 + j];
   });
   return diagonalNeighboursSum;
 }
-
 
 // Increases difference in colour between neighbour pixels
 function applySharpening({
@@ -238,7 +237,11 @@ function applySharpening({
   multiplier,
 }) {
   const neighbours = getNeighbours(i, imageData);
-  const directNeighboursSum = getDirectNeighboursSum(neighbours.direct, j, imageData);
+  const directNeighboursSum = getDirectNeighboursSum(
+    neighbours.direct,
+    j,
+    imageData,
+  );
 
   const rgbaValue = imageData.rgbaValues[i * 4 + j];
   const neighborWeight = (multiplier - 1) / 4;
@@ -256,8 +259,16 @@ function applyBlur({
   multiplier,
 }) {
   const neighbours = getNeighbours(i, imageData);
-  const directNeighboursSum = getDirectNeighboursSum(neighbours.direct, j, imageData);
-  const diagonalNeighboursSum = getDiagonalNeighboursSum(neighbours.diagonal, j, imageData);
+  const directNeighboursSum = getDirectNeighboursSum(
+    neighbours.direct,
+    j,
+    imageData,
+  );
+  const diagonalNeighboursSum = getDiagonalNeighboursSum(
+    neighbours.diagonal,
+    j,
+    imageData,
+  );
 
   const rgbaValue = imageData.rgbaValues[i * 4 + j];
   const newValue = (1 - multiplier) * rgbaValue +
@@ -266,7 +277,7 @@ function applyBlur({
   rgbaNewArray[i * 4 + j] = clapPixelValue(Math.round(newValue));
 }
 
-// Updates pixels rbg values
+// Updates pixels rbg values in different ways depending on effect
 function applyEffectToPixel({
   i,
   imageData,
@@ -316,7 +327,7 @@ function isEdge(i, imageData) {
 }
 
 // Pixel value remains unchagned
-function kernelEffectEdgeCase(i, rgbaNewArray, imageData){
+function kernelEffectEdgeCase(i, rgbaNewArray, imageData) {
   for (let j = 0; j < 4; j++) {
     rgbaNewArray[i * 4 + j] = imageData.rgbaValues[i * 4 + j];
   }
@@ -356,17 +367,8 @@ function plotPixel(i, rgbaNewArray, imageData) {
   }
 }
 
-export function croppingService(imageData, croppingValues) {
+function trimPixels(top, bottom, left, right, imageData) {
   const rgbaNewArray = [];
-  // Converts cropping from string into array
-  croppingValues = JSON.parse(croppingValues);
-  croppingValues.map((croppingValue) => Number(croppingValue));
-
-  const top = croppingValues[0];
-  const bottom = croppingValues[1];
-  const left = croppingValues[2];
-  const right = croppingValues[3];
-
   const startIndex = imageData.width * top;
   const endIndex = (imageData.rgbaValues.length / 4) -
     (imageData.width * bottom);
@@ -379,7 +381,20 @@ export function croppingService(imageData, croppingValues) {
     else if (imageData.width - Xplacment <= right) continue;
     plotPixel(i, rgbaNewArray, imageData);
   }
+  return rgbaNewArray;
+}
+
+function updateImageDimensions(top, bottom, left, right, imageData) {
   imageData.width = imageData.width - left - right;
   imageData.height = imageData.height - top - bottom;
+}
+
+export function croppingService(imageData, croppingValues) {
+  // Converts cropping from string into array
+  const [top, bottom, left, right] = JSON.parse(croppingValues).map(Number);
+
+  const rgbaNewArray = trimPixels(top, bottom, left, right, imageData);
+
+  updateImageDimensions(top, bottom, left, right, imageData);
   imageData.rgbaValues = rgbaNewArray;
 }
