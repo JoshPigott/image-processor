@@ -17,7 +17,7 @@ import {
   croppingService,
   sharpeningService,
 } from "./filters.js";
-import { renderImageOutput } from "../make-canvas.js";
+import { renderImageOutput } from "../render-image-output.js";
 
 // Links filter to order of applying
 function getFilterOrder() {
