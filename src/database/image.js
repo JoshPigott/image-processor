@@ -31,6 +31,13 @@ export function dbGetImage(imageId) {
   return db.prepare(`SELECT * FROM images WHERE imageId=?`).get(imageId);
 }
 
+export function dbGetImageName(imageId) {
+  const res = db.prepare(`SELECT imageName FROM images WHERE imageId=?`).get(
+    imageId,
+  );
+  return res.imageName;
+}
+
 export function dbGetImageSessionId(imageId) {
   const res = db.prepare(`SELECT sessionId FROM images WHERE imageId=?`).get(
     imageId,

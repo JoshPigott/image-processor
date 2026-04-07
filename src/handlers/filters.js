@@ -1,5 +1,5 @@
 import { dbIsFilter, dbRemoveFilter } from "../database/filters.js";
-import { dbGetImageDimensions } from "../database/image.js";
+import { dbGetImageDimensions, dbGetImageName } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
 import { isValidFilterService } from "../services/image-filters/filters-validation.js";
 import { chagneFilterService } from "../services/image-filters/apply-filters.js";
@@ -38,7 +38,8 @@ export async function addFilter(ctx) {
     filterName,
     value,
   );
-  const html = imageOutputView(imageId);
+  const imageName = dbGetImageName(imageId);
+  const html = imageOutputView(imageId, imageName);
   return htmlResponse(html, { status: 201 });
 }
 
