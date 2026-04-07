@@ -58,16 +58,20 @@ export async function isValidImage(image) {
   return true;
 }
 
-// Refactor need
+function getImageInfo(req, image) {
+  const sessionId = getSessionIdService(req);
+  const imageId = crypto.randomUUID();
+  const imageName = sanitizeFileName(image.name);
+  return { sessionId, imageId, imageName };
+}
+
 // Adds image if valid and type supported
 export async function addImageService(req, image) {
   if (await isValidImage(image) === false) {
     return { successful: false };
   }
-  const sessionId = getSessionIdService(req);
-  const imageId = crypto.randomUUID();
-  const imageName = sanitizeFileName(image.name);
 
+  const { sessionId, imageId, imageName } = getImageInfo(req, image);
   await addImageFile(image, imageId);
   const imageMetadata = await getImageMetadataService(imageId);
 

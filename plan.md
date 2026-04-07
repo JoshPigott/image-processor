@@ -20,6 +20,7 @@
 - refactor some of the service and handlers
 - reset image filters -invilad (just for silder) and then for all
 - Then just the whole frontend (CSS and header and footer)
+- Debug download image
 
 - Plan for tomorrow
   - reset image filters -invilad (just for silder) and then for all
