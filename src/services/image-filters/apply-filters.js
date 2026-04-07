@@ -82,7 +82,6 @@ export function applyFiltersService(imageId, imageData) {
   runFilterHandlers(imageData, filters);
 }
 
-
 // Adds, updates, or removes filters based on value.
 export async function chagneFilterService(
   isFilterValid,
@@ -92,7 +91,7 @@ export async function chagneFilterService(
   value,
 ) {
   const filterApplied = dbIsFilter(imageId, filterName);
-  // Default value, remove filter 
+  // Default value, remove filter
   if (isFilterValid.default === true) {
     dbRemoveFilter(imageId, filterName);
   } // Filter is not being applied

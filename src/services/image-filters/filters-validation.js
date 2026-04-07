@@ -95,24 +95,24 @@ function validateSpecific(value, filterValueInfo) {
   };
 }
 
-function isDefaultCroppingValues(croppingValues){
+function isDefaultCroppingValues(croppingValues) {
   return croppingValues === [0, 0, 0, 0];
 }
 
-function validateCropPositiveValues(top, bottom, left, right){
+function validateCropPositiveValues(top, bottom, left, right) {
   return top >= 0 && bottom >= 0 && left >= 0 && right >= 0;
 }
 
-function isVerticalCropValid(top, bottom, imageDimensions){
+function isVerticalCropValid(top, bottom, imageDimensions) {
   return top + bottom < imageDimensions.height;
 }
 
-function isHorizontalCropValid(left, right, imageDimensions){
+function isHorizontalCropValid(left, right, imageDimensions) {
   return left + right < imageDimensions.width;
 }
 
 // Check that cropping values are postive and not big then image
-function isvalidCrop(croppingValues, imageDimensions){
+function isvalidCrop(croppingValues, imageDimensions) {
   const top = croppingValues[0];
   const bottom = croppingValues[1];
   const left = croppingValues[2];
@@ -131,11 +131,9 @@ function validateCropping(value, imageDimensions) {
     croppingValues.map((croppingValue) => Number(croppingValue));
     if (isDefaultCroppingValues(croppingValues)) {
       return { "valid": true, "default": true };
-    }
-    else if (isvalidCrop(croppingValues, imageDimensions) === false){
+    } else if (isvalidCrop(croppingValues, imageDimensions) === false) {
       return { "valid": false };
-    }
-    else return { "valid": true, "default": false };
+    } else return { "valid": true, "default": false };
   } catch (_err) {
     return { "valid": false };
   }

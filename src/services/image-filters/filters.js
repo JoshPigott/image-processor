@@ -47,7 +47,12 @@ export function applyGreyscaleService(rgbaValues) {
 }
 
 // Loops over each rgb value increasing distance from grey average in a linear way
-function scaleColorDistanceFromGrey(rgbaValues, greyAverage, i, satrationMultiplierValue){
+function scaleColorDistanceFromGrey(
+  rgbaValues,
+  greyAverage,
+  i,
+  satrationMultiplierValue,
+) {
   for (let j = 0; j < 3; j++) {
     const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
     const newDistance = distanceFromGreyAverage * satrationMultiplierValue;
@@ -63,13 +68,23 @@ export function applySaturationService(rgbaValues, satrationMultiplierValue) {
     const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
-    scaleColorDistanceFromGrey(rgbaValues, greyAverage, i, satrationMultiplierValue);
+    scaleColorDistanceFromGrey(
+      rgbaValues,
+      greyAverage,
+      i,
+      satrationMultiplierValue,
+    );
   }
 }
 
 // Loops over each rgb value increasing distance from grey average in a non linear way
-function enhanceColorDistanceFromGrey(rgbaValues, greyAverage, i, vibranceValue){
-for (let j = 0; j < 3; j++) {
+function enhanceColorDistanceFromGrey(
+  rgbaValues,
+  greyAverage,
+  i,
+  vibranceValue,
+) {
+  for (let j = 0; j < 3; j++) {
     const distanceFromGreyAverage = rgbaValues[i + j] - greyAverage;
     const vibranceMultiplier = 1 +
       vibranceValue * (1 - (distanceFromGreyAverage / 255));
@@ -86,40 +101,71 @@ export function applyVibranceService(rgbaValues, vibranceValue) {
     const blue = rgbaValues[i + 2];
 
     const greyAverage = Math.round((red + green + blue) / 3);
-    enhanceColorDistanceFromGrey(rgbaValues, greyAverage, i, vibranceValue)
+    enhanceColorDistanceFromGrey(rgbaValues, greyAverage, i, vibranceValue);
+  }
+}
+
+function getCoordinates(i, imageData) {
+  const x = i % imageData.width;
+  const y = Math.floor(i / imageData.width);
+  return { x, y };
+}
+
+function translatePixelRGBA(rgbaNewArray, newIndex, i, imageData) {
+  for (let j = 0; j < 4; j++) {
+    const rgbaIndex = i * 4 + j;
+    const rgbaNewIndex = newIndex * 4 + j;
+    rgbaNewArray[rgbaNewIndex] = imageData.rgbaValues[rgbaIndex];
+  }
+}
+
+function rotateClockwise90degrees(newWidth, rgbaNewArray, imageData) {
+  for (let i = 0; i < imageData.rgbaValues.length / 4; i++) {
+    const { x, y } = getCoordinates(i, imageData);
+
+    const newX = newWidth - 1 - y;
+    const newY = x;
+
+    const newIndex = (newY * newWidth) + newX;
+    translatePixelRGBA(rgbaNewArray, newIndex, i, imageData);
+  }
+}
+
+function rotateAnticlockwise90degrees(
+  newWidth,
+  newHeight,
+  rgbaNewArray,
+  imageData,
+) {
+  for (let i = 0; i < imageData.rgbaValues.length / 4; i++) {
+    const { x, y } = getCoordinates(i, imageData);
+
+    const newX = y;
+    const newY = newHeight - 1 - x;
+
+    const newIndex = (newY * newWidth) + newX;
+    translatePixelRGBA(rgbaNewArray, newIndex, i, imageData);
   }
 }
 
 // Calculates pixel roatation with x and y values
 function rotateBy90(imageData, rotationValue) {
   const clockwiseRotation = rotationValue === 90 ? true : false;
+
   // Height and width swap
   const newWidth = imageData.height;
   const newHeight = imageData.width;
+
   const rgbaNewArray = [];
+  if (clockwiseRotation) {
+    rotateClockwise90degrees(newWidth, rgbaNewArray, imageData);
+  } else {rotateAnticlockwise90degrees(
+      newWidth,
+      newHeight,
+      rgbaNewArray,
+      imageData,
+    );}
 
-  for (let i = 0; i < imageData.rgbaValues.length / 4; i++) {
-    let newX;
-    let newY;
-    const x = i % imageData.width;
-    const y = Math.floor(i / imageData.width);
-
-    if (clockwiseRotation) {
-      newX = newWidth - 1 - y;
-      newY = x;
-    } // Anti clockwise rotation (270 degrees)
-    else {
-      newX = y;
-      newY = newHeight - 1 - x;
-    }
-
-    const newIndex = (newY * newWidth) + newX;
-    for (let j = 0; j < 4; j++) {
-      const rgbaIndex = i * 4 + j;
-      const rgbaNewIndex = newIndex * 4 + j;
-      rgbaNewArray[rgbaNewIndex] = imageData.rgbaValues[rgbaIndex];
-    }
-  }
   // Updates image data
   imageData.rgbaValues = rgbaNewArray;
   imageData.width = newWidth;
