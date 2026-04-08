@@ -1,7 +1,6 @@
 import { dbUpdateLastImageId } from "../database/sessions.js";
 import { dbAddImage } from "../database/image.js";
 import { getImageMetadataService } from "./png-decoder/chunk-parser.js";
-import { getSessionIdService } from "./sessions.js";
 import { renderImageService } from "./render-image-output.js";
 
 // Write image file to data (later on this may just be writing the pixel data)
@@ -58,20 +57,19 @@ export async function isValidImage(image) {
   return true;
 }
 
-function getImageInfo(req, image) {
-  const sessionId = getSessionIdService(req);
+function getImageInfo(image) {
   const imageId = crypto.randomUUID();
   const imageName = sanitizeFileName(image.name);
-  return { sessionId, imageId, imageName };
+  return { imageId, imageName };
 }
 
 // Adds image if valid and type supported
-export async function addImageService(req, image) {
+export async function addImageService(ctx, image) {
   if (await isValidImage(image) === false) {
     return { successful: false };
   }
 
-  const { sessionId, imageId, imageName } = getImageInfo(req, image);
+  const { imageId, imageName } = getImageInfo(image);
   await addImageFile(image, imageId);
   const imageMetadata = await getImageMetadataService(imageId);
 
@@ -81,9 +79,9 @@ export async function addImageService(req, image) {
     return { successful: false };
   }
   renderImageService(imageId);
-  dbUpdateLastImageId(sessionId, imageId);
+  dbUpdateLastImageId(ctx.sessionId, imageId);
   dbAddImage({
-    sessionId,
+    sessionId: ctx.sessionId,
     imageId,
     imageName,
     width: imageMetadata.width,

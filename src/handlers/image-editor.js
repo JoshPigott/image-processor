@@ -1,5 +1,4 @@
 import { filterValuesService } from "../services/image-filters/apply-filters.js";
-import { getSessionIdService } from "../services/sessions.js";
 import { dbGetLastImageId } from "../database/sessions.js";
 import { dbGetImage } from "../database/image.js";
 import { imageEditorHtml } from "../services/htmx-reponses/image-editor.js";
@@ -8,8 +7,7 @@ import { htmlResponse } from "../utils/responses.js";
 
 // Return an image input or an image editor depending on if image has uploaded.
 export function getImageEditor(ctx) {
-  const sessionId = getSessionIdService(ctx.req);
-  const lastImageId = dbGetLastImageId(sessionId);
+  const lastImageId = dbGetLastImageId(ctx.sessionId);
   const image = dbGetImage(lastImageId);
   if (!lastImageId) {
     const html = imageInputHtml();
