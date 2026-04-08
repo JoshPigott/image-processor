@@ -3,8 +3,11 @@ import { dbGetImageDimensions, dbGetImageName } from "../database/image.js";
 import { getSessionIdService } from "../services/sessions.js";
 import { isValidFilterService } from "../services/image-filters/filters-validation.js";
 import { chagneFilterService } from "../services/image-filters/apply-filters.js";
-import { imageOutputView } from "../views/image-output.js";
-import { htmlResponse, json } from "../utils/responses.js";
+import { renderImageService } from "../services/render-image-output.js";
+import { imageOutputHtml } from "../services/htmx-reponses/image-output.js";
+import { filterResetHtml } from "../services/htmx-reponses/filter-reset.js";
+import { resetButtonHtml } from "../utils/htmx-reponses.js";
+import { htmlResponse } from "../utils/responses.js";
 
 // The info need to add a filter
 async function getFilterInfo(formData, req) {
@@ -39,22 +42,27 @@ export async function addFilter(ctx) {
     value,
   );
   const imageName = dbGetImageName(imageId);
-  const html = imageOutputView(imageId, imageName);
+  const html = imageOutputHtml({imageId, imageName});
   return htmlResponse(html, { status: 201 });
 }
 
-// Removes filter
-export async function removeFilter(ctx) {
+// Removes filter and the defualt silder and imgae with the filter
+export async function resetFilter(ctx) {
   const formData = await ctx.req.formData();
   const imageId = formData.get("imageId");
   const filterName = formData.get("filterName");
   const filterApplied = dbIsFilter(imageId, filterName);
+
   // Filter is being applied
   if (filterApplied !== undefined) {
     dbRemoveFilter(imageId, filterName);
-    return json({ "sucess": "Filter was removed" }, { status: 201 });
-  } // Invalid filter
-  else {
-    return json({ "sucess": "Invalid filter" }, { status: 201 });
+    renderImageService(imageId);
+    const imageName = dbGetImageName(imageId);
+
+    const html = filterResetHtml(filterName, imageId, imageName);
+    return htmlResponse(html, { status: 200 });
   }
+  // Filter was not being applied the first place 
+  const html = resetButtonHtml(imageId, filterName); 
+  return htmlResponse(html, { status: 200 });
 }

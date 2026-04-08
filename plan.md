@@ -17,21 +17,9 @@
 
 ## Commit I still need to do are:
 
-- refactor some of the service and handlers
-- reset image filters -invilad (just for silder) and then for all
+- Reset image filters -invilad (just for silder) and then for all
 - Then just the whole frontend (CSS and header and footer)
-- Debug download image
+- Write soloution for sessions like per tab or not but there a bug there right now
 
 - Plan for tomorrow
   - reset image filters -invilad (just for silder) and then for all
-  - refactor some of the service and handlers
-
-## Plan for the reafactor
-
-- Move more code into helper funcation
-- Make the png decoder function into more functions
-- Repeat less of the filters
-
-- Step one write each function steeps
-
-uitlis: bytes, row and pixel
