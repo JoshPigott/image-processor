@@ -1,6 +1,5 @@
 import { dbIsFilter, dbRemoveFilter } from "../database/filters.js";
 import { dbGetImageDimensions, dbGetImageName } from "../database/image.js";
-import { getSessionIdService } from "../services/sessions.js";
 import { isValidFilterService } from "../services/image-filters/filters-validation.js";
 import { chagneFilterService } from "../services/image-filters/apply-filters.js";
 import { renderImageService } from "../services/render-image-output.js";
@@ -10,20 +9,20 @@ import { resetButtonHtml } from "../utils/htmx-reponses.js";
 import { htmlResponse } from "../utils/responses.js";
 
 // The info need to add a filter
-async function getFilterInfo(formData, req) {
-  const sessionId = getSessionIdService(req);
+async function getFilterInfo(formData) {
   const imageId = formData.get("imageId");
   const filterName = formData.get("filterName");
   const value = formData.get("filterValue");
   const imageDimensions = await dbGetImageDimensions(imageId);
-  return { sessionId, imageId, filterName, value, imageDimensions };
+  return { imageId, filterName, value, imageDimensions };
 }
 
 // Adds filter to database unless valid
 export async function addFilter(ctx) {
   const formData = await ctx.req.formData();
-  const { sessionId, imageId, filterName, value, imageDimensions } =
-    await getFilterInfo(formData, ctx.req);
+  const { imageId, filterName, value, imageDimensions } = await getFilterInfo(
+    formData,
+  );
 
   const isFilterValid = isValidFilterService(
     filterName,
@@ -36,7 +35,7 @@ export async function addFilter(ctx) {
   }
   await chagneFilterService(
     isFilterValid,
-    sessionId,
+    ctx.sessionId,
     imageId,
     filterName,
     value,

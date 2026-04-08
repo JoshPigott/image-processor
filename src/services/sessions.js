@@ -2,7 +2,6 @@ import {
   dbCreateSession,
   dbDeleteSession,
   dbGetAllSession,
-  dbGetSession,
 } from "../database/sessions.js";
 import { dbDeleteAllFilters } from "../database/filters.js";
 import { dbDeleteUsersImages, dbGetAllUsersImages } from "../database/image.js";
@@ -79,35 +78,4 @@ export async function expiredSession() {
       scheduleSessionCleanup(session, timeNow);
     }
   }
-}
-
-// Get cookie from request and cookies has an object
-function getCookies(req) {
-  const cookieString = req.headers.get("cookie");
-  // Spilts cookies up
-  let splitCookies = cookieString.split(";");
-  // Remove white space
-  splitCookies = splitCookies.map((spiltCookie) =>
-    spiltCookie.trim().replaceAll('"', "")
-  );
-  // Creates a key value subarrays
-  const keyValueCookies = splitCookies.map((splitCookie) =>
-    splitCookie.split("=")
-  );
-  // Returns as an obect
-  return Object.fromEntries(keyValueCookies);
-}
-
-// Gets session data with sessionId
-export function getSessionService(req) {
-  const cookies = getCookies(req);
-  const sessionId = cookies.sessionId;
-  const session = dbGetSession(sessionId);
-  return session;
-}
-
-// Returns session Id
-export function getSessionIdService(req) {
-  const session = getSessionService(req);
-  return session.sessionId;
 }

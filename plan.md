@@ -17,10 +17,6 @@
 
 ## Commit I still need to do are:
 
-- Reset image filters -invilad (just for silder) and then for all
 - Then just the whole frontend (CSS and header and footer)
 - Write soloution for sessions like per tab or not but there a bug there right
   now
-
-- Plan for tomorrow
-  - reset image filters -invilad (just for silder) and then for all

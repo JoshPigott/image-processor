@@ -8,7 +8,7 @@ export async function addImage(ctx) {
   const formData = await ctx.req.formData();
   const image = formData.get("image");
 
-  const upload = await addImageService(ctx.req, image);
+  const upload = await addImageService(ctx, image);
   if (upload.successful === false) {
     const html = ``;
     return htmlResponse(html, { status: 400 });

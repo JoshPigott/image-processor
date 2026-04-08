@@ -217,6 +217,5 @@
 
 ## Problems issues know constraints
 
-- you can only add one filter at a time per request.
-- That image may can not be served yet
-- There is a bug in download image
+- You can't have different images on same browser
+- You can't chagne image without closing browser and restarting
