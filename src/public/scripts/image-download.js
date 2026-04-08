@@ -11,7 +11,7 @@ async function getBlobData(imageId) {
 
 // Get the imageId and image name from the image
 function getImageMetadata() {
-  const image = document.querySelector(".image-editor .image-output");
+  const image = document.getElementById("image-output");
   const imageId = image.dataset.imageId;
   const imageName = image.dataset.imageName;
   return { imageId, imageName };

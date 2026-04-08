@@ -1,4 +1,4 @@
-export function imageInputView() {
+export function imageInputHtml() {
   return /*html*/ `
   <div class="upload-image">
 		<h2>To begin please upload an image<h2>

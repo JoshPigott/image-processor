@@ -1,6 +1,6 @@
 import { filterValuesService } from "../services/image-filters/apply-filters.js";
 import { addImageService } from "../services/image.js";
-import { imageEditorView } from "../views/image-editor.js";
+import { imageEditorHtml } from "../services/htmx-reponses/image-editor.js";
 import { blobResponse, htmlResponse } from "../utils/responses.js";
 
 // Adds and keeps of the filters being applied to image
@@ -14,7 +14,7 @@ export async function addImage(ctx) {
     return htmlResponse(html, { status: 400 });
   }
   const filterValues = filterValuesService(upload.imageId);
-  const html = imageEditorView(upload.imageId, filterValues, image.name);
+  const html = imageEditorHtml(upload.imageId, filterValues, image.name);
   return htmlResponse(html, { status: 201 });
 }
 

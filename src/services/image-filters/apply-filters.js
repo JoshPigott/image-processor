@@ -17,7 +17,7 @@ import {
   croppingService,
   sharpeningService,
 } from "./filters.js";
-import { renderImageOutput } from "../render-image-output.js";
+import { renderImageService } from "../render-image-output.js";
 
 // Links filter to order of applying
 function getFilterOrder() {
@@ -101,7 +101,7 @@ export async function chagneFilterService(
   else {
     dbUpdateFilter(imageId, filterName, value);
   }
-  await renderImageOutput(imageId);
+  await renderImageService(imageId);
 }
 
 // Gets current filters values for when stite reloads

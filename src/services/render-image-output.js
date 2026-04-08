@@ -26,7 +26,7 @@ function getImageBytes(imageData) {
 }
 
 // If valid makes image out of the image pixels
-export async function renderImageOutput(imageId) {
+export async function renderImageService(imageId) {
   const imageData = await readPngService(imageId);
   if (imageData === undefined) {
     console.log(
