@@ -42,7 +42,7 @@ export async function addFilter(ctx) {
     value,
   );
   const imageName = dbGetImageName(imageId);
-  const html = imageOutputHtml({imageId, imageName});
+  const html = imageOutputHtml({ imageId, imageName });
   return htmlResponse(html, { status: 201 });
 }
 
@@ -62,7 +62,7 @@ export async function resetFilter(ctx) {
     const html = filterResetHtml(filterName, imageId, imageName);
     return htmlResponse(html, { status: 200 });
   }
-  // Filter was not being applied the first place 
-  const html = resetButtonHtml(imageId, filterName); 
+  // Filter was not being applied the first place
+  const html = resetButtonHtml(imageId, filterName);
   return htmlResponse(html, { status: 200 });
 }

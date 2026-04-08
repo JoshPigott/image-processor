@@ -9,10 +9,9 @@ export function renderRequest(imageId, filterName) {
     hx-vals='{"imageId": "${imageId}", "filterName": "${filterName}"}'`;
 }
 
-
 // Contains filter default value to allow filter to be reset
-export function resetButtonHtml(imageId, filterName){  
-  return /*html*/`
+export function resetButtonHtml(imageId, filterName) {
+  return /*html*/ `
     <button  class="filters__reset-button"
     hx-post="filter-reset"
     hx-swap="outerHTML"
@@ -22,10 +21,10 @@ export function resetButtonHtml(imageId, filterName){
 }
 
 // I will need to write some code for the htmx request
-export function filterHtml({filterName, imageId, useOob=false}){
+export function filterHtml({ filterName, imageId, useOob = false }) {
   const filterInfo = getFilterInfo(filterName);
-  const oobAttribute = useOob ? 'hx-swap-oob="true"' : '';
-  return /*html*/`
+  const oobAttribute = useOob ? 'hx-swap-oob="true"' : "";
+  return /*html*/ `
     <div id="${filterName}" ${oobAttribute}>
       <input
         ${renderRequest(imageId, filterName)}
@@ -44,5 +43,3 @@ export function filterHtml({filterName, imageId, useOob=false}){
     </div>
   `;
 }
-
- 

@@ -6,6 +6,6 @@ export function imageEditorHtml(imageId, filterValues, imageName) {
   return /*html*/ `
   ${filtersHtml(imageId, filterValues)}
   ${downloadImageHtml()}
-  ${imageOutputHtml({imageId, imageName})}
+  ${imageOutputHtml({ imageId, imageName })}
   `;
 }
