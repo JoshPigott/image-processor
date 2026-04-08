@@ -1,4 +1,4 @@
-import { renderRequest, filterHtml } from "../../utils/htmx-reponses.js";
+import { filterHtml, renderRequest } from "../../utils/htmx-reponses.js";
 
 // Depending if grey is select or not returns different selected option
 function greyscaleOptions(value) {
@@ -27,13 +27,13 @@ function rotateOptions(value) {
 export function filtersHtml(imageId, filterValues) {
   return /*html*/ `
     <div class="filters">
-      ${filterHtml({filterName: "opacity", imageId})}
-      ${filterHtml({filterName: "brightness", imageId})}
-      ${filterHtml({filterName: "contrast", imageId})}
-      ${filterHtml({filterName: "saturation", imageId})}
-      ${filterHtml({filterName: "vibrance", imageId})}
-      ${filterHtml({filterName: "sharpen", imageId})}
-      ${filterHtml({filterName: "blur", imageId})}
+      ${filterHtml({ filterName: "opacity", imageId })}
+      ${filterHtml({ filterName: "brightness", imageId })}
+      ${filterHtml({ filterName: "contrast", imageId })}
+      ${filterHtml({ filterName: "saturation", imageId })}
+      ${filterHtml({ filterName: "vibrance", imageId })}
+      ${filterHtml({ filterName: "sharpen", imageId })}
+      ${filterHtml({ filterName: "blur", imageId })}
 
       <div class="greyscale">
         <label for="greyscale__input">GREYSCALE</label>
