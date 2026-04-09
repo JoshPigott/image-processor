@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="Htmlport" content="width=device-width, initial-scale=1.0">
-    <title>Image Processor</title>
+    <title>ImageWorks</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
     <script
@@ -13,14 +13,19 @@
     ></script>
   </head>
   <body>
-    <div
-      class="image-editor"
-      hx-get="get-image-editor"
-      hx-trigger="load"
-      hx-swap="innerHTML"
-    >
-    </div>
-    
+    <header>
+      <h1>ImageWorks ProEdit</h1>
+    </header>
+    <main>
+      <div
+        class="image-editor"
+        hx-get="get-image-editor"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      >
+      </div>
+    </main>
+
     <script src="scripts/editor-init.js" type="module"></script>
   </body>
 </html>
