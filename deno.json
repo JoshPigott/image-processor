@@ -2,8 +2,7 @@
   "imports": {
     "@db/sqlite": "jsr:@db/sqlite@^0.13.0",
     "@josefabio/deno-canvas": "jsr:@josefabio/deno-canvas@^1.5.2",
-    "@std/http": "jsr:@std/http@^1.0.25",
-    "@std/path": "jsr:@std/path@^1.1.4"
+    "@std/http": "jsr:@std/http@^1.0.25"
   },
   "tasks": {
     "dev": "deno run --watch --allow-env --allow-write --allow-net --allow-read --allow-ffi src/server.js",

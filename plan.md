@@ -18,5 +18,3 @@
 ## Commit I still need to do are:
 
 - Then just the whole frontend (CSS and header and footer)
-- Write soloution for sessions like per tab or not but there a bug there right
-  now

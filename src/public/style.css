@@ -1,1 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 
+:root {
+  --header-height: 80px;
+  --font-type: sora, arial;
+
+  --primary-text-color: #333333;
+  --secondary-text-color: #1a1a1a;
+
+  --background-primary: #ffedee;
+  --background-secondary: #ffffff;
+
+  --button-primary: #ff9e9e;
+  --button-primary-hover: #ff8a8a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background-color: var(--background-secondary);
+  height: 100dvh;
+}
+
+/*header*/
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 13%;
+  background-color: var(--background-primary);
+}
+header h1 {
+  color: var(--primary-text-color);
+  font-family: var(--font-type);
+  font-weight: 500;
+}
+
+/*upload image*/
+.upload-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 75px;
+  height: calc(100dvh - var(--header-height) - 150px);
+  border-radius: 20px;
+  background-color: var(--background-primary);
+  font-family: var(--font-type);
+}
+
+.upload-image > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-secondary);
+  margin: 75px;
+  height: 80%;
+  width: 100%;
+  border-radius: 20px;
+}
+
+.upload-image__text-container {
+  height: 60%;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+}
+
+.upload-image__title {
+  margin-bottom: 32px;
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--secondary-text-color);
+}
+
+.upload-image__form {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--secondary-text-color);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.upload-image__input-label {
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--secondary-text-color);
+  padding-right: 5px;
+}
+
+#upload-image__input {
+  font-weight: 400;
+  font-size: 24px;
+  color: var(--secondary-text-color);
+  padding: 0px;
+  width: 305px;
+}
+
+#upload-image__input::file-selector-button {
+  background-color: var(--button-primary);
+  border-radius: 12px;
+  border: none;
+}
+
+#upload-image__input::file-selector-button:hover {
+  background-color: var(--button-primary-hover);
+  border-radius: 12px;
+  border: none;
+}
+
+.upload-image__meassage {
+  font-size: 16px;
+}

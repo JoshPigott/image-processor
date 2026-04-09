@@ -107,8 +107,7 @@
     "dependencies": [
       "jsr:@db/sqlite@0.13",
       "jsr:@josefabio/deno-canvas@^1.5.2",
-      "jsr:@std/http@^1.0.25",
-      "jsr:@std/path@^1.1.4"
+      "jsr:@std/http@^1.0.25"
     ]
   }
 }
