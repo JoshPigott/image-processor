@@ -8,7 +8,8 @@ export function imageInputHtml() {
           hx-post="/image-add"
           hx-trigger="input"
           hx-encoding="multipart/form-data"
-          hx-target=".image-editor"
+          hx-target=".upload-image"
+          hx-swap="outerHTML"
           class="upload-image__form">      
           <label class="upload-image__input-label" for="upload-image__input">Upload png image</label>
           <input

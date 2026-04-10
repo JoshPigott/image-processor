@@ -1,4 +1,12 @@
-import { filterHtml, renderRequest } from "../../utils/htmx-reponses.js";
+import { renderRequest, silderFilterHtml } from "../../utils/htmx-reponses.js";
+import { getSliderFilters } from "../../utils/filters-info.js";
+
+function silderFiltersHtml(imageId, filterValues) {
+  const filterNames = getSliderFilters();
+  return filterNames.map((filterName) =>
+    silderFilterHtml({ filterName, filterValues, imageId })
+  ).join("");
+}
 
 // Depending if grey is select or not returns different selected option
 function greyscaleOptions(value) {
@@ -15,7 +23,7 @@ function greyscaleOptions(value) {
 
 // Makes sure value is always selected even if stite reloads
 function rotateOptions(value) {
-  const options = ["0", "90", "180", "270"];
+  const options = ["0", "180"];
   return options.map((angle) => /*html*/ `
     <option value=${angle} ${
     angle === value ? "selected" : ""
@@ -27,13 +35,7 @@ function rotateOptions(value) {
 export function filtersHtml(imageId, filterValues) {
   return /*html*/ `
     <div class="filters">
-      ${filterHtml({ filterName: "opacity", imageId })}
-      ${filterHtml({ filterName: "brightness", imageId })}
-      ${filterHtml({ filterName: "contrast", imageId })}
-      ${filterHtml({ filterName: "saturation", imageId })}
-      ${filterHtml({ filterName: "vibrance", imageId })}
-      ${filterHtml({ filterName: "sharpen", imageId })}
-      ${filterHtml({ filterName: "blur", imageId })}
+      ${silderFiltersHtml(imageId, filterValues)}
 
       <div class="greyscale">
         <label for="greyscale__input">GREYSCALE</label>

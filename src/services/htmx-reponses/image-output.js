@@ -6,6 +6,6 @@ export function imageOutputHtml({ imageId, imageName, useOob = false }) {
     <div id="image-output" data-image-id="${imageId}" data-image-name="${imageName}" ${oobAttribute}>
       <img
       src="/output/${imageId}.png?t=${Date.now()}"
-      alt="image">
+      alt="image" class="image-output__image">
     </div>`;
 }
