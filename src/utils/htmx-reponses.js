@@ -9,19 +9,19 @@ export function renderRequest(imageId, filterName) {
     hx-vals='{"imageId": "${imageId}", "filterName": "${filterName}"}'`;
 }
 
-// Contains filter default value to allow filter to be reset
-export function resetButtonHtml(imageId, filterName) {
-  return /*html*/ `
-    <button  class="filters__reset-button"
-    hx-post="filter-reset"
-    hx-swap="outerHTML"
-    hx-vals='{"imageId": "${imageId}", "filterName": "${filterName}"}'
-    >RESET</button>
-  `;
+// Makes sure the number of decimal places is always the same
+function getLabelText(filterName, filterValues, filterInfo) {
+  const stepSting = filterInfo.step.toString();
+  const numOfDecimalPlaces = stepSting.split(".")[1]?.length ?? 0;
+  return `${filterName.toUpperCase()}: ${
+    Number(filterValues[filterName]).toFixed(numOfDecimalPlaces)
+  }`;
 }
 
 // I will need to write some code for the htmx request
-export function filterHtml({ filterName, imageId, useOob = false }) {
+export function silderFilterHtml(
+  { filterName, filterValues, imageId, useOob = false },
+) {
   const filterInfo = getFilterInfo(filterName);
   const oobAttribute = useOob ? 'hx-swap-oob="true"' : "";
   return /*html*/ `
@@ -30,16 +30,15 @@ export function filterHtml({ filterName, imageId, useOob = false }) {
         ${renderRequest(imageId, filterName)}
         type="range"
         id="${filterName}__input"
-        class="${filterName}__input filter__input-silder"
+        class="${filterName}__input filter__input-slider"
         name="filterValue"
         min="${filterInfo.min}"
         max="${filterInfo.max}"
-        value="${filterInfo.defaultValue}"
+        value="${filterValues[filterName]}"
         step="${filterInfo.step}"
         >
-      <label class="${filterName}__label " for="${filterName}__input"
-      >${filterName.toUpperCase()}: ${filterInfo.defaultValue}</label>
-      ${resetButtonHtml(imageId, filterName)}
+      <label class="${filterName}__label filter__input-label" for="${filterName}__input"
+      >${getLabelText(filterName, filterValues, filterInfo)}</label>
     </div>
   `;
 }

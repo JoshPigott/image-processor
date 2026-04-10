@@ -121,3 +121,105 @@ header h1 {
 .upload-image__meassage {
   font-size: 16px;
 }
+
+/*image-editor*/
+.image-editor {
+  display: flex;
+  gap: 32px;
+  margin: 48px;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-bottom: 48px;
+  min-width: 12vw;
+}
+
+.filter__input-slider {
+  accent-color: pink;
+}
+
+.filter__input-label {
+  text-wrap: nowrap;
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+}
+
+/*greyscale input */
+.greyscale label {
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+  margin-right: 5px;
+}
+
+.greyscale select {
+  background-color: var(--background-primary);
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+}
+
+.greyscale select option {
+  background-color: var(--background-primary);
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+}
+
+/*rotate input */
+.rotate label {
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+  margin-right: 5px;
+}
+
+.rotate select {
+  background-color: var(--background-primary);
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+}
+
+.rotate select option {
+  background-color: var(--background-primary);
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+}
+
+.image-editor__reset-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.filters__reset-button {
+  border: none;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+  background-color: var(--background-primary);
+}
+
+.filters__reset-button:hover {
+  background-color: var(--button-primary);
+}
+
+.image-output__image {
+  max-width: 70vw;
+  max-height: 80vh;
+  margin-left: 48px;
+}
+
+#image-download__button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  font-family: var(--font-type);
+  color: var(--secondary-text-color);
+  background-color: #ffbebe;
+}
+
+#image-download__button:hover {
+  background-color: #ff9e9e;
+}

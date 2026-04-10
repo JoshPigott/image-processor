@@ -1,11 +1,13 @@
 import { dbIsFilter, dbRemoveFilter } from "../database/filters.js";
 import { dbGetImageDimensions, dbGetImageName } from "../database/image.js";
 import { isValidFilterService } from "../services/image-filters/filters-validation.js";
-import { chagneFilterService } from "../services/image-filters/apply-filters.js";
+import {
+  chagneFilterService,
+  filterValuesService,
+} from "../services/image-filters/apply-filters.js";
 import { renderImageService } from "../services/render-image-output.js";
 import { imageOutputHtml } from "../services/htmx-reponses/image-output.js";
 import { filterResetHtml } from "../services/htmx-reponses/filter-reset.js";
-import { resetButtonHtml } from "../utils/htmx-reponses.js";
 import { htmlResponse } from "../utils/responses.js";
 
 // The info need to add a filter
@@ -56,12 +58,18 @@ export async function resetFilter(ctx) {
   if (filterApplied !== undefined) {
     dbRemoveFilter(imageId, filterName);
     renderImageService(imageId);
+    const filterValues = filterValuesService(imageId);
     const imageName = dbGetImageName(imageId);
 
-    const html = filterResetHtml(filterName, imageId, imageName);
+    const html = filterResetHtml({
+      filterName,
+      filterValues,
+      imageId,
+      imageName,
+    });
     return htmlResponse(html, { status: 200 });
   }
   // Filter was not being applied the first place
-  const html = resetButtonHtml(imageId, filterName);
+  const html = ""; //resetButtonHtml(imageId, filterName);
   return htmlResponse(html, { status: 200 });
 }

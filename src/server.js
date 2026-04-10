@@ -36,13 +36,13 @@ async function server(req, sessionId) {
 
 // Wraps server making sure errors don't leak
 async function safeServer(req) {
-  try {
-    const sessionWrappedServer = await handleSession(server);
-    return await sessionWrappedServer(req);
-  } catch (err) {
-    console.log(`There was an error of: ${err}`);
-    return json({ error: "There is an error" }, { status: 500 });
-  }
+  // try {
+  const sessionWrappedServer = await handleSession(server);
+  return await sessionWrappedServer(req);
+  // } catch (err) {
+  //   console.log(`There was an error of: ${err}`);
+  //   return json({ error: "There is an error" }, { status: 500 });
+  // }
 }
 
 Deno.serve({ port: 8000 }, safeServer);

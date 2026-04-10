@@ -20,6 +20,12 @@
 - Filter tracking
 - Image downloading
 
+## Screenshots
+
+upload section ![image upload section](/screenshots/upload-page.png) Image
+process section
+![image editor with picture being edited](/screenshots/image-editor.png)
+
 - **Filters**
 - Editing opacity
 - Editing brigtness
@@ -219,3 +225,5 @@
 
 - You can't have different images on same browser
 - You can't chagne image without closing browser and restarting
+- media have not add so UI looks bad on laptops and phone as made on desktop
+- Cropping and 90 and 270 rotations filter are not being implemented
