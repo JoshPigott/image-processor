@@ -58,7 +58,7 @@ header h1 {
   justify-content: center;
   background-color: var(--background-secondary);
   margin: 75px;
-  height: 80%;
+  height: 70%;
   width: 100%;
   border-radius: 20px;
 }
@@ -120,6 +120,21 @@ header h1 {
 
 .upload-image__meassage {
   font-size: 16px;
+}
+
+@media (max-width: 1000px) {
+  .upload-image {
+    height: auto;
+  }
+  .upload-image > div {
+    padding: 10% 0;
+  }
+  .upload-image__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+  }
 }
 
 /*image-editor*/
@@ -185,6 +200,7 @@ header h1 {
   color: var(--secondary-text-color);
 }
 
+/*image-editor input*/
 .image-editor__reset-buttons {
   display: flex;
   flex-direction: column;
@@ -207,7 +223,7 @@ header h1 {
 
 .image-output__image {
   max-width: 70vw;
-  max-height: 80vh;
+  max-height: 80dvh;
   margin-left: 48px;
 }
 
